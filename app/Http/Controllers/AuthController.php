@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -25,8 +26,8 @@ class AuthController extends Controller
 
         // Проверяем, существует ли пользователь
         $user = User::where('email', $credentials['email'])->first();
-        
-        if ($user && Hash::check($request->password, $user->password)) {
+        Log::info('user',['user' => $user,'password' => $user->password]);
+        if ($user && Hash::check($credentials['password'], $user->password)) {
             // Вручную авторизуем пользователя
             Auth::login($user, $request->filled('remember'));
             $request->session()->regenerate();
@@ -45,4 +46,4 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect('/');
     }
-} 
+}

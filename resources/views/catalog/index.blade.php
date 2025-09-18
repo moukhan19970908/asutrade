@@ -13,31 +13,38 @@
                     <div class="space-y-4">
                         <div>
                             <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Поиск</label>
-                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                    id="search" name="search" value="{{ request('search') }}" placeholder="Поиск товаров...">
                         </div>
-                        
+
                         <div>
                             <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Категория</label>
-                            <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                     id="category" name="category">
                                 <option value="">Все категории</option>
+                                @php
+                                    $selectedCategory = request('category');
+                                    if ($selectedCategory instanceof \App\Models\Category) {
+                                        $selectedCategory = $selectedCategory->id;
+                                    }
+                                @endphp
+
                                 @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                                    <option value="{{ $category->id }}" {{ $selectedCategory == $category->id ? 'selected' : '' }}>
                                         {{ $category->name }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
-                        
+
                         <div>
                             <label class="flex items-center">
-                                <input type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" 
+                                <input type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                                        id="in_stock" name="in_stock" value="1" {{ request('in_stock') ? 'checked' : '' }}>
                                 <span class="ml-2 text-sm text-gray-700">В наличии</span>
                             </label>
                         </div>
-                        
+
                         <button type="submit" class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors duration-200">
                             <i class="fas fa-search mr-2"></i> Применить фильтры
                         </button>
@@ -66,8 +73,8 @@
                             <!-- Изображение товара -->
                             <div class="aspect-w-1 aspect-h-1 bg-gray-200">
                                 @if($product->image)
-                                    <img src="{{ asset('storage/' . $product->image) }}" 
-                                         alt="{{ $product->name }}" 
+                                    <img src="{{ asset('storage/' . $product->image) }}"
+                                         alt="{{ $product->name }}"
                                          class="w-full h-48 object-cover">
                                 @else
                                     <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
@@ -75,28 +82,28 @@
                                     </div>
                                 @endif
                             </div>
-                            
+
                             <div class="p-4">
                                 <h3 class="font-semibold text-gray-900 mb-2 text-sm">{{ $product->name }}</h3>
                                 <div class="text-gray-500 text-xs mb-2">{{ $product->category->name }}</div>
-                                
+
                                 @if($product->description)
                                     <div class="text-gray-600 text-xs mb-3">{{ Str::limit($product->description, 60) }}</div>
                                 @endif
-                                
+
                                 <div class="flex justify-between items-center mb-3">
                                     <span class="font-bold text-lg text-gray-900">{{ number_format($product->price) }} ₸</span>
                                     <span class="px-2 py-1 text-xs rounded-full {{ $product->in_stock ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
                                         {{ $product->in_stock ? 'В наличии' : 'Нет в наличии' }}
                                     </span>
                                 </div>
-                                
+
                                 <div class="space-y-2">
-                                    <a href="{{ route('catalog.show', $product) }}" 
+                                    <a href="{{ route('catalog.show', $product) }}"
                                        class="block w-full text-center py-2 px-4 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors duration-200 text-sm">
                                         <i class="fas fa-eye mr-1"></i> Подробнее
                                     </a>
-                                    
+
                                     @if($product->in_stock)
                                         <form action="{{ route('cart.add', $product) }}" method="POST">
                                             @csrf
@@ -111,7 +118,7 @@
                         </div>
                     @endforeach
                 </div>
-                
+
                 <div class="mt-8">
                     {{ $products->links() }}
                 </div>
@@ -130,4 +137,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection
