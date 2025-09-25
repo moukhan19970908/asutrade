@@ -12,9 +12,9 @@
     </section>
 
     <!-- Категории -->
-    <section class="mb-8">
+    <section class="mb-6">
         <h2 class="text-2xl font-bold text-gray-900 mb-6">Категории</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             @foreach($categories as $category)
                 <a href="{{ route('catalog.category', $category) }}" class="block">
                     <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-4 text-center">
@@ -25,8 +25,8 @@
                                 <i class="fas fa-th-large text-gray-500"></i>
                             </div>
                         @endif
-                        <div class="font-semibold text-gray-900 text-sm">{{ $category->name }}</div>
-                        <div class="text-gray-500 text-xs">{{ $category->products_count ?? 0 }} товаров</div>
+                        <div class="font-semibold text-gray-900 text-base">{{ $category->name }}</div>
+                        <div class="text-gray-500 text-sm">{{ $category->products_count ?? 0 }} товаров</div>
                     </div>
                 </a>
             @endforeach
