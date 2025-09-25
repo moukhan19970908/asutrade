@@ -19,7 +19,7 @@
                 <a href="{{ route('catalog.category', $category) }}" class="block">
                     <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-4 text-center">
                         @if($category->image)
-                            <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-12 h-12 mx-auto mb-2 object-contain">
+                            <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-24 h-24 mx-auto mb-2 object-contain">
                         @else
                             <div class="w-12 h-12 mx-auto mb-2 bg-gray-200 rounded-lg flex items-center justify-center">
                                 <i class="fas fa-th-large text-gray-500"></i>
