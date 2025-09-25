@@ -42,8 +42,8 @@
                     <!-- Изображение товара -->
                     <div class="aspect-w-1 aspect-h-1 bg-gray-200">
                         @if($product->image)
-                            <img src="{{ asset('storage/' . $product->image) }}" 
-                                 alt="{{ $product->name }}" 
+                            <img src="{{ asset('storage/' . $product->image) }}"
+                                 alt="{{ $product->name }}"
                                  class="w-full h-48 object-cover">
                         @else
                             <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
@@ -51,13 +51,10 @@
                             </div>
                         @endif
                     </div>
-                    
+
                     <div class="p-4">
-                        <h3 class="font-semibold text-gray-900 mb-2 text-sm">{{ $product->name }}</h3>
+                        <h3 class="font-semibold text-gray-900 mb-2 text-sm whitespace-nowrap overflow-hidden text-ellipsis">{{ $product->name }}</h3>
                         <div class="text-gray-500 text-xs mb-2">{{ $product->category->name }}</div>
-                        @if($product->description)
-                            <div class="text-gray-600 text-xs mb-3">{{ Str::limit($product->description, 60) }}</div>
-                        @endif
                         <div class="flex justify-between items-center mb-3">
                             <span class="font-bold text-lg text-gray-900">{{ number_format($product->price) }} ₸</span>
                             <span class="px-2 py-1 text-xs rounded-full {{ $product->in_stock ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
@@ -98,8 +95,8 @@
                     <!-- Изображение товара -->
                     <div class="aspect-w-1 aspect-h-1 bg-gray-200">
                         @if($product->image)
-                            <img src="{{ asset('storage/' . $product->image) }}" 
-                                 alt="{{ $product->name }}" 
+                            <img src="{{ asset('storage/' . $product->image) }}"
+                                 alt="{{ $product->name }}"
                                  class="w-full h-48 object-cover">
                         @else
                             <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
@@ -107,13 +104,10 @@
                             </div>
                         @endif
                     </div>
-                    
+
                     <div class="p-4">
-                        <h3 class="font-semibold text-gray-900 mb-2 text-sm">{{ $product->name }}</h3>
+                        <h3 class="font-semibold text-gray-900 mb-2 text-sm whitespace-nowrap overflow-hidden text-ellipsis">{{ $product->name }}</h3>
                         <div class="text-gray-500 text-xs mb-2">{{ $product->category->name }}</div>
-                        @if($product->description)
-                            <div class="text-gray-600 text-xs mb-3">{{ Str::limit($product->description, 60) }}</div>
-                        @endif
                         <div class="flex justify-between items-center mb-3">
                             <span class="font-bold text-lg text-gray-900">{{ number_format($product->price) }} ₸</span>
                             <span class="px-2 py-1 text-xs rounded-full {{ $product->in_stock ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
@@ -160,4 +154,4 @@
         </div>
     </section>
 </div>
-@endsection 
+@endsection

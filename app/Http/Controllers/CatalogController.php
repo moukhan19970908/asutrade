@@ -50,7 +50,26 @@ class CatalogController extends Controller
         // Получаем информацию о персональной скидке
         $discountInfo = $this->getPersonalDiscountInfo($product);
 
-        return view('catalog.show', compact('product', 'relatedProducts', 'stockInfo', 'discountInfo'));
+        $popularProducts = Product::where('in_stock', true)
+            ->whereNotNull('image') // Только товары с изображениями
+            ->with('category')
+            ->orderBy('created_at', 'desc') // Сначала новые
+            ->take(4)
+            ->get();
+
+        // Если товаров с изображениями меньше 8, добавляем остальные
+        if ($popularProducts->count() < 4) {
+            $additionalProducts = Product::where('in_stock', true)
+                ->whereNull('image')
+                ->with('category')
+                ->orderBy('created_at', 'desc')
+                ->take(4 - $popularProducts->count())
+                ->get();
+
+            $popularProducts = $popularProducts->merge($additionalProducts);
+        }
+
+        return view('catalog.show', compact('product', 'popularProducts','relatedProducts', 'stockInfo', 'discountInfo'));
     }
 
     public function category(Category $category)
@@ -64,13 +83,13 @@ class CatalogController extends Controller
     private function getProductStockInfo(Product $product)
     {
         $user = Auth::user();
-        
+
         if ($user && $user->warehouse) {
             // Авторизованный пользователь - показываем остаток только в его складе
             $stock = $product->warehouses()
                 ->where('warehouse_id', $user->warehouse_id)
                 ->first();
-            
+
             return [
                 'type' => 'user_warehouse',
                 'warehouse_name' => $user->warehouse->name,
@@ -82,21 +101,21 @@ class CatalogController extends Controller
             $warehouses = Warehouse::all();
             $stockData = [];
             $totalStock = 0;
-            
+
             foreach ($warehouses as $warehouse) {
                 $stock = $product->warehouses()
                     ->where('warehouse_id', $warehouse->id)
                     ->first();
-                
+
                 $stockAmount = $stock ? $stock->pivot->stock : 0;
                 $totalStock += $stockAmount;
-                
+
                 $stockData[] = [
                     'warehouse_name' => $warehouse->name,
                     'stock' => $stockAmount
                 ];
             }
-            
+
             return [
                 'type' => 'all_warehouses',
                 'warehouses' => $stockData,
@@ -109,7 +128,7 @@ class CatalogController extends Controller
     private function getPersonalDiscountInfo(Product $product)
     {
         $user = Auth::user();
-        
+
         if (!$user) {
             return [
                 'has_discount' => false,
@@ -120,7 +139,7 @@ class CatalogController extends Controller
         }
 
         $discount = $product->getPersonalDiscountForUser($user->id);
-        
+
         if ($discount) {
             $discountedPrice = $product->getDiscountedPrice($user->id);
             return [
