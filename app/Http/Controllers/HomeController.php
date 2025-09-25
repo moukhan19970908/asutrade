@@ -11,7 +11,7 @@ class HomeController extends Controller
     public function index()
     {
         $categories = Category::withCount('products')->get();
-        
+
         // Получаем популярные товары (с изображениями и в наличии)
         $popularProducts = Product::where('in_stock', true)
             ->whereNotNull('image') // Только товары с изображениями
@@ -19,7 +19,7 @@ class HomeController extends Controller
             ->orderBy('created_at', 'desc') // Сначала новые
             ->take(8)
             ->get();
-        
+
         // Если товаров с изображениями меньше 8, добавляем остальные
         if ($popularProducts->count() < 8) {
             $additionalProducts = Product::where('in_stock', true)
@@ -28,10 +28,10 @@ class HomeController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->take(8 - $popularProducts->count())
                 ->get();
-            
+
             $popularProducts = $popularProducts->merge($additionalProducts);
         }
-        
+
         $popularBrands = \App\Models\Brand::where('is_popular', true)->get();
 
         // Новые поступления (последние добавленные товары)
@@ -42,5 +42,13 @@ class HomeController extends Controller
             ->get();
 
         return view('home', compact('categories', 'popularProducts', 'popularBrands', 'newProducts'));
+    }
+
+    public function delivery(){
+        return view('delivery');
+    }
+
+    public function about(){
+        return view('about');
     }
 }

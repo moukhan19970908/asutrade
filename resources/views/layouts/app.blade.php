@@ -22,9 +22,9 @@
                 <!-- Navigation -->
                 <nav class="hidden md:flex space-x-8">
                     <a href="{{ route('catalog.index') }}" class="text-gray-900 hover:text-gray-600">Каталог</a>
-                    <a href="#" class="text-gray-900 hover:text-gray-600">Бренды</a>
+                    <a href="{{route('about')}}" class="text-gray-900 hover:text-gray-600">О нас</a>
                     <a href="#" class="text-gray-900 hover:text-gray-600">Акции</a>
-                    <a href="#" class="text-gray-900 hover:text-gray-600">Доставка</a>
+                    <a href="{{route('delivery')}}" class="text-gray-900 hover:text-gray-600">Доставка</a>
                 </nav>
 
                 <!-- Right side -->
@@ -112,4 +112,4 @@
     <!-- Alpine.js for dropdown functionality -->
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </body>
-</html> 
+</html>

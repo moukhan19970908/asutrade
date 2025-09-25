@@ -16,7 +16,8 @@ Route::prefix('admin/import')->name('admin.products.')->group(function () {
 
 // Главная страница
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
+Route::get('/delivery', [HomeController::class, 'delivery'])->name('delivery');
+Route::get('/about', [HomeController::class, 'about'])->name('about');
 // Каталог
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
@@ -51,7 +52,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    
+
     // Маршруты заказов (требуют авторизации)
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('orders.checkout');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
