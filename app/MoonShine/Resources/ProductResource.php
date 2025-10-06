@@ -155,7 +155,7 @@ class ProductResource extends ModelResource
             'brand_id' => ['nullable', 'exists:brands,id'],
             'price' => ['required', 'numeric', 'min:0'],
             'description' => ['nullable', 'string'],
-            'image' => ['nullable', 'image', 'max:2048'],
+            'image' => ['nullable', 'image', 'max:20480'],
             'in_stock' => ['boolean'],
         ];
     }
