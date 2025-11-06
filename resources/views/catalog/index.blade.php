@@ -116,7 +116,7 @@
                     @endforeach
                 </div>
 
-                <div class="mt-8">
+                <div class="mt-8" style="span{color: blue;}">
                     {{ $products->links() }}
                 </div>
             @else

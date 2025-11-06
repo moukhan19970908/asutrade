@@ -32,4 +32,7 @@ return [
     'coolant' => 'Охлаждающие жидкости',
     'language' => 'Язык',
     'currency' => 'тг.',
-]; 
+    'previous' => '&laquo; Назад',
+    'next' => 'Вперёд &raquo;',
+    'showing' => 'Показано с :first по :last из :total результатов',
+];

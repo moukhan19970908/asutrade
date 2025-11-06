@@ -47,6 +47,7 @@ class ProductResource extends ModelResource
             Select::make('Категория', 'category_id')
                 ->options(fn() => \App\Models\Category::pluck('name', 'id')->toArray())
                 ->sortable(),
+            Image::make('Изображение','image'),
             Select::make('Бренд', 'brand_id')
                 ->options(fn() => \App\Models\Brand::pluck('name', 'id')->toArray())
                 ->sortable(),
@@ -78,8 +79,9 @@ class ProductResource extends ModelResource
                 Textarea::make('Описание', 'description')
                     ->placeholder('Введите описание товара'),
                 Image::make('Изображение', 'image')
+                    ->dir('products')
                     ->disk('public')
-                    ->dir('products'),
+                    ->removable(),
                 Switcher::make('В наличии', 'in_stock')
                     ->default(true),
             ])
@@ -155,7 +157,7 @@ class ProductResource extends ModelResource
             'brand_id' => ['nullable', 'exists:brands,id'],
             'price' => ['required', 'numeric', 'min:0'],
             'description' => ['nullable', 'string'],
-            'image' => ['nullable', 'image', 'max:51200'],
+            'image' => ['nullable'],
             'in_stock' => ['boolean'],
         ];
     }

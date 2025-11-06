@@ -13,11 +13,11 @@ return [
     |
     */
 
-    'showing' => 'Showing',
-    'of' => 'of',
-    'to' => 'to',
-    'results' => 'results',
-    'previous' => '&laquo; Previous',
-    'next' => 'Next &raquo;',
+    'showing' => 'Показано',
+    'of' => 'c',
+    'to' => 'по',
+    'results' => 'результаты',
+    'previous' => '&laquo; Назад',
+    'next' => 'Вперед &raquo;',
 
 ];
