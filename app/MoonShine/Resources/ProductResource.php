@@ -43,7 +43,7 @@ class ProductResource extends ModelResource
     {
         return [
             ID::make()->sortable(),
-            Text::make('Название', 'name')->sortable(),
+            Text::make('Название', 'name'),
             Select::make('Категория', 'category_id')
                 ->options(fn() => \App\Models\Category::pluck('name', 'id')->toArray())
                 ->sortable(),
@@ -54,6 +54,11 @@ class ProductResource extends ModelResource
             Number::make('Цена', 'price')->sortable(),
             Switcher::make('В наличии', 'in_stock')->sortable(),
         ];
+    }
+
+    public function search(): array
+    {
+        return ['name','category.name','price'];
     }
 
     /**
