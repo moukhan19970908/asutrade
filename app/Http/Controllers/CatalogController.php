@@ -15,7 +15,7 @@ class CatalogController extends Controller
         $query = Product::with('category');
 
         // Фильтр по категории
-        if ($request->has('category')) {
+        if ($request->has('category') && $request->get('category') != null) {
             $query->where('category_id', $request->category);
         }
 
@@ -33,12 +33,8 @@ class CatalogController extends Controller
         $products = $query->paginate(12);
         $categories = Category::all();
 
-        $category = null;
-        if ($request->has('category') && $request->category) {
-            $category = Category::find($request->category);
-        }
 
-        return view('catalog.index', compact('products', 'categories','category'));
+        return view('catalog.index', compact('products', 'categories'));
     }
 
     public function show(Product $product)
