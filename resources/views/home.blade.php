@@ -17,7 +17,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             @foreach($categories as $category)
                 <a href="{{ route('catalog.category', $category) }}" class="block">
-                    <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-4 text-center">
+                    <div class="bg-gray-100 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-4 text-center">
                         @if($category->image)
                             <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-24 h-24 mx-auto mb-2 object-contain">
                         @else
@@ -139,7 +139,7 @@
         <h2 class="text-2xl font-bold text-gray-900 mb-6">Популярные бренды</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             @foreach($popularBrands as $brand)
-                <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-4 text-center">
+                <div class="bg-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-4 text-center">
                     @if($brand->logo)
                         <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}" class="w-10 h-10 mx-auto mb-2 object-contain">
                     @else

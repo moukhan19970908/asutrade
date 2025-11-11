@@ -76,15 +76,15 @@
                                 @if($product->image)
                                     <img src="{{ asset('storage/' . $product->image) }}"
                                          alt="{{ $product->name }}"
-                                         class="w-full h-48 object-cover">
+                                         class="w-full object-cover">
                                 @else
-                                    <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                                    <div class="w-full bg-gray-200 flex items-center justify-center">
                                         <i class="fas fa-image text-gray-400 text-4xl"></i>
                                     </div>
                                 @endif
                             </div>
 
-                            <div class="p-4">
+                            <div class="p-4 bg-gray-100">
                                 <h3 class="font-semibold text-gray-900 mb-2 text-sm whitespace-nowrap overflow-hidden text-ellipsis">{{ $product->name }}</h3>
                                 <div class="text-gray-500 text-xs mb-2">{{ $product->category->name }}</div>
 
@@ -118,7 +118,7 @@
                 </div>
 
                 <div class="mt-8">
-                    {{ $products->links('pagination::bootstrap-4') }}
+                    {{ $products->appends(request()->except('page'))->links('pagination::bootstrap-4') }}
                 </div>
             @else
                 <div class="text-center py-12">
