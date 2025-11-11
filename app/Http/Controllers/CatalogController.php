@@ -17,7 +17,7 @@ class CatalogController extends Controller
         // Фильтр по категории
         if ($request->has('category') && $request->get('category') != null) {
             $query->where('category_id', $request->category);
-            $category = $request->get('category');
+            $category = Category::where('id', $request->get('category'))->first();
         }
 
         // Поиск по названию
