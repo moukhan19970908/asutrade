@@ -13,10 +13,11 @@ class CatalogController extends Controller
     public function index(Request $request)
     {
         $query = Product::with('category');
-
+        $category = null;
         // Фильтр по категории
         if ($request->has('category') && $request->get('category') != null) {
             $query->where('category_id', $request->category);
+            $category = $request->get('category');
         }
 
         // Поиск по названию
@@ -34,7 +35,7 @@ class CatalogController extends Controller
         $categories = Category::all();
 
 
-        return view('catalog.index', compact('products', 'categories'));
+        return view('catalog.index', compact('products', 'categories', 'category'));
     }
 
     public function show(Product $product)
