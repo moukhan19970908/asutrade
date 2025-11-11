@@ -33,7 +33,12 @@ class CatalogController extends Controller
         $products = $query->paginate(12);
         $categories = Category::all();
 
-        return view('catalog.index', compact('products', 'categories'));
+        $category = null;
+        if ($request->has('category') && $request->category) {
+            $category = Category::find($request->category);
+        }
+
+        return view('catalog.index', compact('products', 'categories','category'));
     }
 
     public function show(Product $product)
