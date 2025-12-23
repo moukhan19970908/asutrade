@@ -9,6 +9,8 @@ use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Number;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 
+
+
 class OrderItemResource extends ModelResource
 {
     protected string $model = OrderItem::class;
@@ -25,6 +27,21 @@ class OrderItemResource extends ModelResource
             Number::make('Цена', 'price')->sortable(),
             Number::make('Количество', 'quantity')->sortable(),
             Number::make('Сумма', 'subtotal')->sortable(),
+        ];
+    }
+
+    public function detailFields(): iterable
+    {
+        return [
+            ID::make(),
+
+            BelongsTo::make('Заказ', 'order', 'order_number'),
+            BelongsTo::make('Товар', 'product', 'name'),
+
+            Text::make('Название товара', 'product_name'),
+            Number::make('Цена', 'price'),
+            Number::make('Количество', 'quantity'),
+            Number::make('Сумма', 'subtotal'),
         ];
     }
 
@@ -57,4 +74,4 @@ class OrderItemResource extends ModelResource
     {
         return ['product_name', 'order.order_number'];
     }
-} 
+}

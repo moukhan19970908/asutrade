@@ -14,6 +14,7 @@ use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use MoonShine\Laravel\Fields\Relationships\HasMany;
 use MoonShine\UI\Components\Layout\Box;
 
+
 class OrderResource extends ModelResource
 {
     protected string $model = Order::class;
@@ -40,6 +41,36 @@ class OrderResource extends ModelResource
             Number::make('Сумма', 'total_amount')->sortable(),
             Number::make('Количество товаров', 'items_count')->readonly(),
             Date::make('Дата создания', 'created_at')->sortable(),
+
+        ];
+    }
+
+    public function detailFields(): iterable
+    {
+        return [
+            ID::make(),
+
+            Text::make('Номер заказа', 'order_number')->readonly(),
+            BelongsTo::make('Пользователь', 'user', 'name')->readonly(),
+            Select::make('Статус', 'status')
+                ->options([
+                    'pending' => 'Ожидает обработки',
+                    'processing' => 'В обработке',
+                    'shipped' => 'Отправлен',
+                    'delivered' => 'Доставлен',
+                    'cancelled' => 'Отменен',
+                ])
+                ->readonly(),
+            Number::make('Сумма заказа', 'total_amount')->readonly(),
+
+            HasMany::make('Позиции заказа', 'items', resource: OrderItemResource::class)
+                ->fields([
+                    Text::make('Товар', 'product_name'),
+                    Number::make('Цена', 'price'),
+                    Number::make('Кол-во', 'quantity'),
+                    Number::make('Сумма', 'subtotal'),
+                ])
+                ->readonly(),
         ];
     }
 
@@ -60,8 +91,18 @@ class OrderResource extends ModelResource
                 Number::make('Сумма заказа', 'total_amount')->readonly(),
                 Date::make('Дата создания', 'created_at')->readonly(),
                 Textarea::make('Комментарий', 'notes'),
+
+                HasMany::make('Позиции заказа', 'items', resource: OrderItemResource::class)
+                    ->fields([
+                        Text::make('Товар', 'product_name'),
+                        Number::make('Цена', 'price'),
+                        Number::make('Кол-во', 'quantity'),
+                        Number::make('Сумма', 'subtotal'),
+                    ])
+                    ->readonly(),
             ]),
-            
+
+
             Box::make('Информация о доставке', [
                 Text::make('Имя получателя', 'shipping_name'),
                 Text::make('Телефон', 'shipping_phone'),
@@ -125,4 +166,4 @@ class OrderResource extends ModelResource
                 ]),
         ];
     }
-} 
+}
