@@ -3,6 +3,64 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 @section('title', 'Каталог товаров - ASU Trade')
 
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .content {
+        padding: 40px;
+    }
+
+    /* Стрелки в центре */
+    .arrows-middle {
+        position: fixed;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .arrow {
+        width: 45px;
+        height: 45px;
+        background: #333;
+        color: #fff;
+        font-size: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 50%;
+        opacity: 0.7;
+    }
+
+    .arrow:hover {
+        opacity: 1;
+    }
+
+    /* Стрелка снизу */
+    .arrow-bottom {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        width: 50px;
+        height: 50px;
+        background: #593887;
+        color: #fff;
+        font-size: 24px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+</style>
+
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <div class="flex flex-col lg:flex-row gap-8">
@@ -116,6 +174,10 @@
                         </div>
                     @endforeach
                 </div>
+                <div class="arrows-middle">
+                    <div class="arrow arrow-up">▲</div>
+                    <div class="arrow arrow-down">▼</div>
+                </div>
 
                 <div class="mt-8">
                     {{ $products->appends(request()->except('page'))->links('pagination::bootstrap-4') }}
@@ -136,3 +198,34 @@
     </div>
 </div>
 @endsection
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const arrowUp = document.querySelector('.arrow-up');
+        const arrowDown = document.querySelector('.arrow-down');
+
+        function scrollUp() {
+            window.scrollBy({ top: -window.innerHeight, behavior: 'smooth' });
+        }
+
+        function scrollDown() {
+            window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+        }
+
+        function updateArrows() {
+            const scrollTop = window.scrollY;
+            const winHeight = window.innerHeight;
+            const docHeight = document.documentElement.scrollHeight;
+
+            arrowUp.style.display = scrollTop <= 10 ? 'none' : 'flex';
+            arrowDown.style.display =
+                scrollTop + winHeight >= docHeight - 10 ? 'none' : 'flex';
+        }
+
+        arrowUp.addEventListener('click', scrollUp);
+        arrowDown.addEventListener('click', scrollDown);
+
+        window.addEventListener('scroll', updateArrows);
+        updateArrows();
+    });
+
+</script>
