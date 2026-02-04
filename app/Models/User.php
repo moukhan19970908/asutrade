@@ -28,6 +28,8 @@ class User extends Authenticatable
         'address',
         'postal_code',
         'warehouse_id',
+        'limit',
+        'duty',
     ];
 
     /**

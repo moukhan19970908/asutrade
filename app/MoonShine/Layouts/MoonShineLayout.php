@@ -29,8 +29,10 @@ use MoonShine\UI\Components\{Breadcrumbs,
     Layout\ThemeSwitcher,
     Layout\TopBar,
     Layout\Wrapper,
-    When};
+    When
+};
 use App\MoonShine\Resources\CategoryResource;
+use MoonShine\Laravel\MoonShineAuth;
 use MoonShine\MenuManager\MenuItem;
 use MoonShine\MenuManager\MenuGroup;
 use App\MoonShine\Resources\ProductResource;
@@ -57,17 +59,23 @@ final class MoonShineLayout extends AppLayout
 
     protected function menu(): array
     {
-        return [
-            ...parent::menu(),
-            MenuGroup::make('Каталог', [
-                MenuItem::make('Категории', CategoryResource::class),
-                MenuItem::make('Товары', ProductResource::class),
-                MenuItem::make('Бренды', BrandResource::class),
-                MenuItem::make('Пользователи', UserResource::class),
-                MenuItem::make('Заказы', OrderResource::class),
-                MenuItem::make('Скидки', PersonalDiscountResource::class),
-            ]),
-        ];
+        if (auth()->user()->moonshine_user_role_id === 2) {
+            return [
+                    MenuItem::make('Пользователи', UserResource::class),
+            ];
+        } else {
+            return [
+                ...parent::menu(),
+                MenuGroup::make('Каталог', [
+                    MenuItem::make('Категории', CategoryResource::class),
+                    MenuItem::make('Товары', ProductResource::class),
+                    MenuItem::make('Бренды', BrandResource::class),
+                    MenuItem::make('Пользователи', UserResource::class),
+                    MenuItem::make('Заказы', OrderResource::class),
+                    MenuItem::make('Скидки', PersonalDiscountResource::class),
+                ]),
+            ];
+        }
     }
 
     /**

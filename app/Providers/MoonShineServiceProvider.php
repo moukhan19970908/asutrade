@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use MoonShine\Contracts\Core\DependencyInjection\ConfiguratorContract;
 use MoonShine\Contracts\Core\DependencyInjection\CoreContract;
-use MoonShine\Laravel\DependencyInjection\MoonShine;
 use MoonShine\Laravel\DependencyInjection\MoonShineConfigurator;
 use App\MoonShine\Resources\MoonShineUserResource;
 use App\MoonShine\Resources\MoonShineUserRoleResource;
@@ -18,7 +18,11 @@ use App\MoonShine\Resources\UserResource;
 use App\MoonShine\Resources\OrderResource;
 use App\MoonShine\Resources\OrderItemResource;
 use App\MoonShine\Resources\PersonalDiscountResource;
+use MoonShine\Laravel\Models\MoonshineUser;
+use MoonShine\Laravel\MoonShineAuth;
 use MoonShine\MenuManager\MenuItem;
+use MoonShine\Permissions\Traits\HasMoonShinePermissions;
+use MoonShine\Permissions\Traits\WithPermissions;
 
 class MoonShineServiceProvider extends ServiceProvider
 {
@@ -51,7 +55,7 @@ class MoonShineServiceProvider extends ServiceProvider
     {
         return [
             MenuItem::make('Каталог', [
-                MenuItem::make('Категории', new CategoryResource()),
+                MenuItem::make('Категории', new CategoryResource())->canSee(fn() => MoonshineUser::$moonshine_user_role_id === 2),
                 MenuItem::make('Товары', ProductResource::class),
                 MenuItem::make('Бренд', BrandResource::class),
                 MenuItem::make('Персональные скидки', new PersonalDiscountResource()),

@@ -26,7 +26,7 @@ class BrandResource extends ModelResource
     protected string $model = Brand::class;
 
     protected string $title = 'Бренды';
-    
+
     /**
      * @return list<FieldContract>
      */
@@ -90,5 +90,9 @@ class BrandResource extends ModelResource
             'logo' => ['nullable', 'image', 'max:2048'],
             'is_popular' => ['boolean'],
         ];
+    }
+    public function canView(mixed $item): bool
+    {
+        return auth('moonshine')->user()?->role === 'Operator';
     }
 }

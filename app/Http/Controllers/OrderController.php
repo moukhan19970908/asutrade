@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +22,7 @@ class OrderController extends Controller
         $user = Auth::user();
         $cart = $this->getOrCreateCart();
         $cart->load('items.product');
-        
+
         // Проверяем корзину
         if ($cart->items->count() === 0) {
             return redirect()->route('cart.index')->with('error', 'Корзина пуста');
@@ -49,9 +50,12 @@ class OrderController extends Controller
 
         $cart = $this->getOrCreateCart();
         $cart->load('items.product');
-        
+
         if ($cart->items->count() === 0) {
             return redirect()->route('cart.index')->with('error', 'Корзина пуста');
+        }
+        if ($cart->total > Auth::user()->limit){
+            return back()->with('error', 'У вас не хватает лимита');
         }
 
         try {
@@ -70,6 +74,11 @@ class OrderController extends Controller
                 'shipping_city' => $request->shipping_city,
                 'shipping_address' => $request->shipping_address,
                 'shipping_postal_code' => $request->shipping_postal_code,
+            ]);
+            $user = User::find(Auth::id());
+            $user->update([
+                'limit' => Auth::user()->limit - $cart->total,
+                'duty' => $cart->total,
             ]);
 
             // Create order items
@@ -123,13 +132,13 @@ class OrderController extends Controller
     private function getOrCreateCart()
     {
         $sessionId = session()->getId();
-        
+
         $cart = Cart::where('session_id', $sessionId)->first();
-        
+
         if (!$cart) {
             $cart = Cart::create(['session_id' => $sessionId]);
         }
-        
+
         return $cart;
     }
 }

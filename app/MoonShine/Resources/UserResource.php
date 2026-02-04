@@ -9,7 +9,9 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UserCredentialsMail;
 //use MoonShine\Fields\ID;
+use MoonShine\Permissions\Traits\WithPermissions;
 use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Email;
 use MoonShine\UI\Fields\Password;
@@ -29,6 +31,7 @@ class UserResource extends ModelResource
             ID::make()->sortable(),
             Text::make('Имя', 'name')->required(),
             Email::make('Email', 'email')->required(),
+            Number::make('Лимит','limit')->required(),
             Select::make('Город', 'warehouse_id')
                 ->options(fn() => \App\Models\Warehouse::pluck('name', 'id')->toArray())
                 ->nullable(),
@@ -47,6 +50,9 @@ class UserResource extends ModelResource
             Box::make([
                 Text::make('Имя', 'name')->required(),
                 Email::make('Email', 'email')->required(),
+                Number::make('Лимит', 'limit')->required(),
+                Number::make('Долг', 'duty')->required(),
+
                 Select::make('Город', 'warehouse_id')
                     ->options(fn() => \App\Models\Warehouse::pluck('name', 'id')->toArray())
                     ->nullable(),
@@ -62,6 +68,8 @@ class UserResource extends ModelResource
             \MoonShine\UI\Fields\ID::make()->sortable(),
             \MoonShine\UI\Fields\Text::make('Имя', 'name')->sortable(),
             \MoonShine\UI\Fields\Email::make('Email', 'email')->sortable(),
+            Number::make('Лимит', 'limit')->sortable(),
+            Number::make('Долг', 'duty')->sortable(),
             \MoonShine\UI\Fields\Select::make('Город', 'warehouse_id')
                 ->options(fn() => \App\Models\Warehouse::pluck('name', 'id')->toArray())
                 ->sortable(),
@@ -111,4 +119,5 @@ class UserResource extends ModelResource
 
         return $data;
     }*/
+
 }

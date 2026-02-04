@@ -10,10 +10,6 @@
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-xl font-bold text-gray-900 mb-6">Мой аккаунт</h2>
                 <nav class="space-y-2">
-                    <a href="#" class="flex items-center px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-md">
-                        <i class="fas fa-home mr-3"></i>
-                        Обзор
-                    </a>
                     <a href="{{ route('profile.index') }}" class="flex items-center px-3 py-2 bg-blue-50 text-blue-700 rounded-md">
                         <i class="fas fa-user mr-3"></i>
                         Профиль
@@ -48,52 +44,49 @@
                     </div>
                 @endif
 
-                <form action="{{ route('profile.update') }}" method="POST">
-                    @csrf
-                    @method('PUT')
+{{--                <form action="{{ route('profile.update') }}" method="POST">--}}
+{{--                    @csrf--}}
+{{--                    @method('PUT')--}}
 
                     <!-- Personal Information -->
-                    <div class="mb-8">
+                    <div class="mb-12">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Личная информация</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
                             <div>
                                 <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Имя</label>
-                                <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}" 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('name') border-red-500 @enderror">
-                                @error('name')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
+                                <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('name') border-red-500 @enderror" disabled>
                             </div>
 
                             <div>
                                 <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                                <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('email') border-red-500 @enderror">
-                                @error('email')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
+                                <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('email') border-red-500 @enderror" disabled>
                             </div>
 
                             <div>
-                                <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Номер телефона</label>
-                                <input type="text" id="phone" name="phone" value="{{ old('phone', $user->phone) }}" 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('phone') border-red-500 @enderror">
-                                @error('phone')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
+                                <label for="limit" class="block text-sm font-medium text-gray-700 mb-2">Лимит</label>
+                                <input type="number" id="email" name="limit" value="{{ old('email', $user->limit) }}"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('email') border-red-500 @enderror" disabled>
+                            </div>
+
+                            <div>
+                                <label for="limit" class="block text-sm font-medium text-gray-700 mb-2">Долг</label>
+                                <input type="number" id="duty" name="limit" value="{{ old('email', $user->duty) }}"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('email') border-red-500 @enderror" disabled>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Save Button -->
+                   {{-- <!-- Save Button -->
                     <div class="flex justify-end">
                         <button type="submit" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors duration-200">
                             Сохранить изменения
                         </button>
                     </div>
-                </form>
+                </form>--}}
             </div>
         </div>
     </div>
 </div>
-@endsection 
+@endsection
