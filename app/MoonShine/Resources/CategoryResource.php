@@ -10,6 +10,7 @@ use App\Models\Category;
 use MoonShine\Laravel\Resources\ModelResource;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Select;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Fields\HasMany;
@@ -48,6 +49,9 @@ class CategoryResource extends ModelResource
                 Text::make('Название', 'name')
                     ->required()
                     ->placeholder('Введите название категории'),
+                Select::make('Родительская категория','parent_id')
+                    ->options(Category::whereNull('parent_id')->pluck('name','id')->toArray())
+                    ->placeholder('Родительская категория'),
                 Image::make('Изображение', 'image')
                     ->disk('public')
                     ->dir('categories'),
