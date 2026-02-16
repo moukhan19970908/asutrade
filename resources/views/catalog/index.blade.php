@@ -68,7 +68,7 @@
         <div class="lg:w-1/4">
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Фильтры</h3>
-                <form action="{{ route('catalog.index') }}" method="GET">
+                <form action="{{ isset($category) ? route('catalog.category', $category) : route('catalog.index') }}" method="GET">
                     <div class="space-y-4">
                         <div>
                             <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Поиск</label>
@@ -76,24 +76,16 @@
                                    id="search" name="search" value="{{ request('search') }}" placeholder="Поиск товаров...">
                         </div>
 
-                        <div>
-                            <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Категория</label>
-                            <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    id="category" name="category">
-                                <option value="">Все категории</option>
-                                @php
-                                    $selectedCategory = request('category');
-                                    if ($selectedCategory instanceof \App\Models\Category) {
-                                        $selectedCategory = $selectedCategory->id;
-                                    }
-                                @endphp
-
-                                @foreach($categories as $cat)
-                                    <option value="{{ $cat->id }}" {{ $selectedCategory == $cat->id ? 'selected' : '' }}>
-                                        {{ $cat->name }}
-                                    </option>
-                                @endforeach
-                            </select>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Категории</label>
+                            <div class="border border-gray-200 rounded-md p-2 max-h-96 overflow-y-auto bg-gray-50">
+                                <div class="mb-2">
+                                    <a href="{{ route('catalog.index') }}" class="block px-2 py-1 rounded hover:bg-white {{ !isset($category) ? 'font-bold text-blue-600' : 'text-gray-700' }}">
+                                        Все категории
+                                    </a>
+                                </div>
+                                @include('partials.category-tree', ['categories' => $categories])
+                            </div>
                         </div>
 
                         <div>

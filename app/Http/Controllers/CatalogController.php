@@ -32,8 +32,9 @@ class CatalogController extends Controller
         }
 
         $products = $query->paginate(12);
-        $categories = Category::all();
 
+        // Получаем дерево категорий для фильтра
+        $categories = Category::whereNull('parent_id')->with('children')->get();
 
         return view('catalog.index', compact('products', 'categories', 'category'));
     }
@@ -71,13 +72,29 @@ class CatalogController extends Controller
             $popularProducts = $popularProducts->merge($additionalProducts);
         }
 
-        return view('catalog.show', compact('product', 'popularProducts','relatedProducts', 'stockInfo', 'discountInfo'));
+        // Получаем дерево категорий для сайдбара
+        $categories = Category::whereNull('parent_id')->with('children')->get();
+
+        return view('catalog.show', compact('product', 'popularProducts', 'relatedProducts', 'stockInfo', 'discountInfo', 'categories'));
     }
 
-    public function category(Category $category)
+    public function category(Request $request, Category $category)
     {
-        $products = $category->products()->paginate(12);
-        $categories = Category::all();
+        $query = $category->products();
+
+        // Поиск по названию
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        // Фильтр по наличию
+        if ($request->has('in_stock')) {
+            $query->where('in_stock', $request->in_stock);
+        }
+
+        $products = $query->paginate(12);
+        $categories = Category::whereNull('parent_id')->with('children')->get();
 
         return view('catalog.index', compact('products', 'categories', 'category'));
     }
@@ -98,7 +115,8 @@ class CatalogController extends Controller
                 'stock' => $stock ? $stock->pivot->stock : 0,
                 'available' => $stock && $stock->pivot->stock > 0
             ];
-        } else {
+        }
+        else {
             // Неавторизованный пользователь - показываем остатки во всех складах
             $warehouses = Warehouse::all();
             $stockData = [];
