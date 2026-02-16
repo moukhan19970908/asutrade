@@ -50,7 +50,7 @@ class CategoryResource extends ModelResource
                     ->required()
                     ->placeholder('Введите название категории'),
                 Select::make('Родительская категория','parent_id')
-                    ->options(Category::whereNull('parent_id')->pluck('name','id')->toArray())
+                    ->options(Category::where('id','>',0)->pluck('name','id')->toArray())
                     ->placeholder('Родительская категория'),
                 Image::make('Изображение', 'image')
                     ->disk('public')
