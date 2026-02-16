@@ -10,7 +10,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $categories = Category::withCount('products')->get();
+        $categories = Category::withCount('products')->whereNull('parent_id')->get();
 
         // Получаем популярные товары (с изображениями и в наличии)
         $popularProducts = Product::where('in_stock', true)
