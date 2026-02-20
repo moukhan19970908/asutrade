@@ -26,7 +26,7 @@ class Category extends Model
                     $table = explode(' as ', $table)[1];
                 }
 
-                $builder->whereNotIn($table . '.id', [36,38,40,41,44,52,61,62,63,64,65]);
+                $builder->whereNotIn($table . '.id', [35,36,38,40,41,44,52,61,62,63,64,65]);
             }
         });
     }

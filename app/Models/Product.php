@@ -32,7 +32,7 @@ class Product extends Model
         static::addGlobalScope('city_restricted_products', function ($builder) {
             if (auth()->check() && auth()->user()->warehouse_id == 2) {
                 // Исключаем товары, принадлежащие скрытым категориям
-                $builder->whereNotIn('category_id', [36,38,40,41,44,52,61,62,63,64,65]);
+                $builder->whereNotIn('category_id', [35,36,38,40,41,44,52,61,62,63,64,65]);
             }
         });
     }
