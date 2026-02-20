@@ -14,6 +14,23 @@ class Category extends Model
         'parent_id'
     ];
 
+    protected static function booted()
+    {
+        static::addGlobalScope('exclude_special_categories', function ($builder) {
+            if (auth()->check() && auth()->user()->warehouse_id == 2) {
+                // Получаем текущий алиас таблицы (по умолчанию 'categories', но если изменен — подставит 'parent')
+                $table = $builder->getQuery()->from ?? $builder->getModel()->getTable();
+
+                // Если в $table строка типа "categories as parent", вырезаем только алиас
+                if (str_contains($table, ' as ')) {
+                    $table = explode(' as ', $table)[1];
+                }
+
+                $builder->whereNotIn($table . '.id', [36,38,40,41,44,52,61,62,63,64,65]);
+            }
+        });
+    }
+
     public function products(): HasMany
     {
         return $this->hasMany(Product::class,'category_id');

@@ -111,7 +111,7 @@
 
                     <div class="p-4">
                         <h3 class="font-semibold text-gray-900 mb-2 text-sm whitespace-nowrap overflow-hidden text-ellipsis">{{ $product->name }}</h3>
-                        <div class="text-gray-500 text-xs mb-2">{{ $product->category->name }}</div>
+                        <div class="text-gray-500 text-xs mb-2">{{ optional($product->category)->name }}</div>
                         <div class="flex justify-between items-center mb-3">
                             <span class="font-bold text-lg text-gray-900">{{ number_format($product->price) }} ₸</span>
                             <span class="px-2 py-1 text-xs rounded-full {{ $product->in_stock ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
@@ -170,7 +170,7 @@
 
                     <div class="p-4">
                         <h3 class="font-semibold text-gray-900 mb-2 text-sm whitespace-nowrap overflow-hidden text-ellipsis">{{ $product->name }}</h3>
-                        <div class="text-gray-500 text-xs mb-2">{{ $product->category->name }}</div>
+                        <div class="text-gray-500 text-xs mb-2">{{ optional($product->category)->name }}</div>
                         <div class="flex justify-between items-center mb-3">
                             <span class="font-bold text-lg text-gray-900">{{ number_format($product->price) }} ₸</span>
                             <span class="px-2 py-1 text-xs rounded-full {{ $product->in_stock ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">

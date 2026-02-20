@@ -15,6 +15,10 @@ class HomeController extends Controller
             ->leftJoin('categories as child', 'child.parent_id', '=', 'parent.id')
             ->leftJoin('products', 'products.category_id', '=', 'child.id')
             ->whereNull('parent.parent_id')
+            // Добавляем условие вручную с алиасом parent
+            ->when(auth()->check() && auth()->user()->city_id == 2, function($q) {
+                $q->whereNotIn('parent.id', [1, 2, 3]);
+            })
             ->selectRaw('parent.id, parent.name, COUNT(products.id) as products_count')
             ->groupBy('parent.id', 'parent.name')
             ->get();
@@ -24,6 +28,7 @@ class HomeController extends Controller
         // Получаем популярные товары (с изображениями и в наличии)
         $popularProducts = Product::where('in_stock', true)
             ->whereNotNull('image') // Только товары с изображениями
+            ->whereHas('category')
             ->with('category')
             ->orderBy('created_at', 'desc') // Сначала новые
             ->take(8)
@@ -33,6 +38,7 @@ class HomeController extends Controller
         if ($popularProducts->count() < 8) {
             $additionalProducts = Product::where('in_stock', true)
                 ->whereNull('image')
+                ->whereHas('category')
                 ->with('category')
                 ->orderBy('created_at', 'desc')
                 ->take(8 - $popularProducts->count())
