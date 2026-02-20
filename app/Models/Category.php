@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
@@ -18,17 +19,17 @@ class Category extends Model
         return $this->hasMany(Product::class,'category_id');
     }
 
-    public function parent()
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(Category::class , 'parent_id');
     }
 
-    public function children()
+    public function children(): HasMany
     {
         return $this->hasMany(Category::class , 'parent_id');
     }
 
-    public function getTotalProductsCountAttribute()
+  /*  public function getTotalProductsCountAttribute()
     {
         $count = $this->products()->count();
 
@@ -37,6 +38,12 @@ class Category extends Model
         }
 
         return $count;
+    }*/
+
+    public function getTotalProductsCountAttribute(): int
+    {
+        return $this->products_count
+            + $this->children->sum('products_count');
     }
 
     public function isAncestorOf($category)

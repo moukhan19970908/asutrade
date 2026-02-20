@@ -73,14 +73,30 @@ class CatalogController extends Controller
         }
 
         // Получаем дерево категорий для сайдбара
-        $categories = Category::whereNull('parent_id')->with('children')->get();
+        $categories = Category::whereNull('parent_id')
+            ->withCount('products') // товары у родителя
+            ->with(['children' => function($q){
+                $q->withCount('products'); // товары у детей
+            }])
+            ->get();
 
         return view('catalog.show', compact('product', 'popularProducts', 'relatedProducts', 'stockInfo', 'discountInfo', 'categories'));
     }
+    function loadChildren($query) {
+        $query->withCount('products')
+            ->with(['children' => function($q) { loadChildren($q); }]);
+    }
+
+
 
     public function category(Request $request, Category $category)
     {
-        $query = $category->products();
+        //dd(Category::select('id','parent_id')->get());
+        $categoryIds = collect([$category->id])
+            ->merge($category->children()->pluck('id'))
+            ->toArray();
+
+        $query = \App\Models\Product::whereIn('category_id', $categoryIds);
 
         // Поиск по названию
         if ($request->has('search')) {
