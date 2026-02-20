@@ -10,18 +10,8 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $categories = Category::query()
-            ->select('categories.*')
-            ->selectRaw('
-        COUNT(DISTINCT p1.id) +
-        COUNT(DISTINCT p2.id) as total_products_count
-    ')
-            ->leftJoin('products as p1', 'p1.category_id', '=', 'categories.id')
-            ->leftJoin('categories as c2', 'c2.parent_id', '=', 'categories.id')
-            ->leftJoin('products as p2', 'p2.category_id', '=', 'c2.id')
-            ->whereNull('categories.parent_id')
-            ->groupBy('categories.id')
-            ->get();
+        $categories = Category::withCount('products')->whereNull('parent_id')->get();
+
 
 
         // Получаем популярные товары (с изображениями и в наличии)
