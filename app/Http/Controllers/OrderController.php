@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Cart;
-
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 class OrderController extends Controller
 {
     public function checkout()
@@ -54,7 +55,7 @@ class OrderController extends Controller
         if ($cart->items->count() === 0) {
             return redirect()->route('cart.index')->with('error', 'Корзина пуста');
         }
-        if ($cart->total > Auth::user()->limit){
+        if ($cart->total > Auth::user()->limit) {
             return back()->with('error', 'У вас не хватает лимита');
         }
 
@@ -80,7 +81,7 @@ class OrderController extends Controller
                 'limit' => Auth::user()->limit - $cart->total,
                 'duty' => $cart->total,
             ]);
-
+            $message = "Заказ оформлен!";
             // Create order items
             foreach ($cart->items as $item) {
                 OrderItem::create([
@@ -91,13 +92,21 @@ class OrderController extends Controller
                     'quantity' => $item->quantity,
                     'subtotal' => $item->subtotal,
                 ]);
+                $message .= "\n" . $item->product->name . " x " . $item->quantity . " = " . $item->subtotal;
             }
+            $message .= "\nИтого: " . $cart->total;
 
             // Clear cart
             $cart->items()->delete();
 
             DB::commit();
 
+
+            $s = Http::get("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
+                'chat_id' => env('TELEGRAM_CHAT_ID'),
+                'text' => $message
+            ]);
+            Log::info("telegram", ['data' => $s]);
             return redirect()->route('orders.show', $order)->with('success', 'Заказ успешно оформлен!');
 
         } catch (\Exception $e) {
