@@ -6,13 +6,13 @@
     <title>@yield('title', 'Asu Trade')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="manifest" href="/manifest.json">
 
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="MyApp">
+    <meta name="apple-mobile-web-app-title" content="AsuTrade">
 
-    <link rel="apple-touch-icon" href="/img/logo.png">
+    <link rel="apple-touch-icon" href="{{ asset('img/logo.png') }}">
 </head>
 <body class="bg-gray-50">
 <!-- Header -->
