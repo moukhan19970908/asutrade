@@ -28,6 +28,14 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'onec' => [
+        'base_url' => env('ONEC_BASE_URL', 'https://oilservice.kz/kacopy/hs/AsuAutoV2'),
+        'login' => env('ONEC_LOGIN', 'admin'),
+        'password' => env('ONEC_PASSWORD'),
+        'timeout' => (int) env('ONEC_TIMEOUT', 20),
+        'verify_ssl' => filter_var(env('ONEC_VERIFY_SSL', true), FILTER_VALIDATE_BOOL),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
