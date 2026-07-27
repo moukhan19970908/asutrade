@@ -162,6 +162,44 @@ class OneCController extends Controller
     }
 
     /**
+     * GET /api/getCarOilChanges?car_id=1&phone=77771112233
+     *
+     * Возвращает сохранённые в БД замены масла, привязанные к машине.
+     * Телефон должен совпадать с телефоном машины.
+     */
+    public function getCarOilChanges(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'car_id' => ['required', 'integer', 'exists:cars,id'],
+            'phone' => ['required', 'string', 'max:20'],
+        ]);
+
+        $phone = preg_replace('/\D+/', '', $data['phone']) ?? '';
+
+        $car = Car::where('id', $data['car_id'])
+            ->where('phone', $phone)
+            ->first();
+
+        if (! $car) {
+            return response()->json([
+                'error' => 'Машина не найдена для указанного телефона',
+            ], 404);
+        }
+
+        $oilChanges = $car->oilChanges()
+            ->orderByDesc('id')
+            ->get()
+            ->map(fn (OilChange $item) => [
+                'id' => $item->id,
+                'carId' => $item->car_id,
+                'number' => $item->number,
+                'mileage' => $item->mileage,
+            ]);
+
+        return response()->json($oilChanges, 200);
+    }
+
+    /**
      * POST /api/createOilChange
      *
      * Привязывает замену масла (чек из 1С) к автомобилю. Номер чека

@@ -20,4 +20,5 @@ Route::controller(OneCController::class)->group(function () {
     Route::post('/createCar', 'createCar')->name('api.createCar');
     Route::get('/getCars', 'getCars')->name('api.getCars');
     Route::post('/createOilChange', 'createOilChange')->name('api.createOilChange');
+    Route::get('/getCarOilChanges', 'getCarOilChanges')->name('api.getCarOilChanges');
 });
