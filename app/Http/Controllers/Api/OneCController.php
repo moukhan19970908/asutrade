@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Car;
+use App\Models\OilChange;
+use App\Models\User;
 use App\Services\OneC\OneCClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -73,5 +76,64 @@ class OneCController extends Controller
         ]);
 
         return $this->onec->findClientByQr($data['code'])->toJsonResponse();
+    }
+
+    /**
+     * POST /api/createCar
+     *
+     * Сохраняет автомобиль клиента в локальной БД. Если клиент с таким
+     * телефоном есть в приложении — привязывает машину к нему.
+     */
+    public function createCar(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'phone' => ['required', 'string', 'max:20'],
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+
+        $phone = preg_replace('/\D+/', '', $data['phone']) ?? '';
+
+        $car = Car::create([
+            'user_id' => User::where('phone', $phone)->value('id'),
+            'phone' => $phone,
+            'name' => $data['name'],
+        ]);
+
+        return response()->json([
+            'id' => $car->id,
+            'userId' => $car->user_id,
+            'phone' => $car->phone,
+            'name' => $car->name,
+        ], 201);
+    }
+
+    /**
+     * POST /api/createOilChange
+     *
+     * Привязывает замену масла (чек из 1С) к автомобилю. Номер чека
+     * уникален — повторная отправка того же чека вернёт 409.
+     */
+    public function createOilChange(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'car_id' => ['required', 'integer', 'exists:cars,id'],
+            'number' => ['required', 'string', 'max:255'],
+            'mileage' => ['required', 'integer', 'min:0'],
+        ]);
+
+        if (OilChange::where('number', $data['number'])->exists()) {
+            return response()->json([
+                'error' => 'Замена масла с таким номером чека уже существует',
+            ], 409);
+        }
+
+        $oilChange = OilChange::create($data);
+
+        return response()->json([
+            'id' => $oilChange->id,
+            'carId' => $oilChange->car_id,
+            'number' => $oilChange->number,
+            'mileage' => $oilChange->mileage,
+        ], 201);
     }
 }
