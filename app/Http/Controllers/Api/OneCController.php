@@ -108,6 +108,32 @@ class OneCController extends Controller
     }
 
     /**
+     * GET /api/getCars?phone=77771112233
+     *
+     * Возвращает список автомобилей клиента по номеру телефона.
+     */
+    public function getCars(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'phone' => ['required', 'string', 'max:20'],
+        ]);
+
+        $phone = preg_replace('/\D+/', '', $data['phone']) ?? '';
+
+        $cars = Car::where('phone', $phone)
+            ->orderByDesc('id')
+            ->get()
+            ->map(fn (Car $car) => [
+                'id' => $car->id,
+                'userId' => $car->user_id,
+                'phone' => $car->phone,
+                'name' => $car->name,
+            ]);
+
+        return response()->json($cars, 200);
+    }
+
+    /**
      * POST /api/createOilChange
      *
      * Привязывает замену масла (чек из 1С) к автомобилю. Номер чека
