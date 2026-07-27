@@ -194,6 +194,7 @@ class OneCController extends Controller
                 'carId' => $item->car_id,
                 'number' => $item->number,
                 'mileage' => $item->mileage,
+                'created_at' => $item->created_at->toDateTimeString(),
             ]);
 
         return response()->json($oilChanges, 200);
