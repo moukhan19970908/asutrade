@@ -15,6 +15,7 @@ Route::controller(OneCController::class)->group(function () {
     Route::post('/createUser', 'createUser')->name('api.createUser');
     Route::get('/getLevels', 'getLevels')->name('api.getLevels');
     Route::get('/getHistory', 'getHistory')->name('api.getHistory');
+    Route::get('/getOilChangeHistory', 'getOilChangeHistory')->name('api.getOilChangeHistory');
     Route::get('/findClientByQr', 'findClientByQr')->name('api.findClientByQr');
     Route::post('/createCar', 'createCar')->name('api.createCar');
     Route::get('/getCars', 'getCars')->name('api.getCars');

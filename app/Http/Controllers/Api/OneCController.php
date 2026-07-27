@@ -108,6 +108,34 @@ class OneCController extends Controller
     }
 
     /**
+     * GET /api/getOilChangeHistory?phone=... | ?clientId=...
+     *
+     * Возвращает из истории клиента 1С только замены масла
+     * (записи с type = "Замена масла").
+     */
+    public function getOilChangeHistory(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'clientId' => ['required_without:phone', 'nullable', 'string', 'max:64'],
+            'phone' => ['required_without:clientId', 'nullable', 'string', 'max:20'],
+        ]);
+
+        $response = $this->onec->getHistory($data);
+
+        // При ошибке 1С пробрасываем её как есть.
+        if (! $response->successful()) {
+            return $response->toJsonResponse();
+        }
+
+        $oilChanges = array_values(array_filter(
+            $response->data,
+            fn ($item) => is_array($item) && ($item['type'] ?? null) === 'Замена масла',
+        ));
+
+        return response()->json($oilChanges, 200);
+    }
+
+    /**
      * GET /api/getCars?phone=77771112233
      *
      * Возвращает список автомобилей клиента по номеру телефона.
