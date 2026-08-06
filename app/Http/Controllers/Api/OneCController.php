@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Car;
 use App\Models\OilChange;
 use App\Models\OnecUser;
+use App\Services\GreenApi\GreenApiClient;
 use App\Services\OneC\OneCClient;
+use App\Services\Otp\OtpService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Прокси к HTTP-сервису 1С AsuAutoV2 для мобильного приложения ASU Auto.
@@ -18,7 +21,11 @@ use Illuminate\Http\Request;
  */
 class OneCController extends Controller
 {
-    public function __construct(protected OneCClient $onec) {}
+    public function __construct(
+        protected OneCClient $onec,
+        protected GreenApiClient $greenApi,
+        protected OtpService $otp,
+    ) {}
 
     /**
      * GET /api/checkUser?phone=77771112233
@@ -35,9 +42,13 @@ class OneCController extends Controller
     /**
      * POST /api/createUser
      *
+     * Номер должен быть заранее подтверждён кодом из WhatsApp
+     * (POST /api/sendOtp → POST /api/verifyOtp), иначе 403.
+     *
      * Сохраняет клиента в локальной таблице onec_users и, если передан
-     * car_name, сразу создаёт привязанный к нему автомобиль. После этого
-     * запрос уходит в 1С — её ответ пробрасывается наружу как есть.
+     * car_name, сразу создаёт привязанный к нему автомобиль. Затем шлёт
+     * приветствие в WhatsApp и уходит в 1С — её ответ пробрасывается наружу
+     * как есть.
      */
     public function createUser(Request $request): JsonResponse
     {
@@ -49,6 +60,15 @@ class OneCController extends Controller
         ]);
 
         $phone = preg_replace('/\D+/', '', $data['phone']) ?? '';
+
+        if (config('services.otp.required_on_register') && ! $this->otp->verified($phone)) {
+            return response()->json([
+                'error' => 'Номер не подтверждён. Запросите код через /api/sendOtp и подтвердите его',
+            ], 403);
+        }
+
+        // Подтверждение одноразовое: повторно создать клиента тем же кодом нельзя.
+        $this->otp->consume($phone);
 
         $onecUser = OnecUser::create([
             'name' => $data['name'],
@@ -64,7 +84,32 @@ class OneCController extends Controller
             ]);
         }
 
+        $this->sendWelcomeMessage($phone, $data['name']);
+
         return $this->onec->createUser($data['name'], $data['phone'])->toJsonResponse();
+    }
+
+    /**
+     * Приветствие в WhatsApp после регистрации. Ошибка отправки не должна
+     * ломать регистрацию — она только пишется в лог.
+     */
+    protected function sendWelcomeMessage(string $phone, string $name): void
+    {
+        if (! config('services.green_api.welcome_enabled') || ! $this->greenApi->configured()) {
+            return;
+        }
+
+        $message = strtr((string) config('services.green_api.welcome_message'), [':name' => $name]);
+
+        $response = $this->greenApi->sendMessage($phone, $message);
+
+        if (! $response->successful()) {
+            Log::warning('GreenAPI: приветствие не отправлено', [
+                'phone' => $phone,
+                'status' => $response->status,
+                'body' => $response->data,
+            ]);
+        }
     }
 
     /**
