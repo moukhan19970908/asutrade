@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Car;
 use App\Models\OilChange;
-use App\Models\User;
+use App\Models\OnecUser;
 use App\Services\OneC\OneCClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -34,13 +34,35 @@ class OneCController extends Controller
 
     /**
      * POST /api/createUser
+     *
+     * Сохраняет клиента в локальной таблице onec_users и, если передан
+     * car_name, сразу создаёт привязанный к нему автомобиль. После этого
+     * запрос уходит в 1С — её ответ пробрасывается наружу как есть.
      */
     public function createUser(Request $request): JsonResponse
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:20'],
+            'car_name' => ['nullable', 'string', 'max:255'],
+            'vin_code' => ['nullable', 'string', 'max:255'],
         ]);
+
+        $phone = preg_replace('/\D+/', '', $data['phone']) ?? '';
+
+        $onecUser = OnecUser::create([
+            'name' => $data['name'],
+            'phone' => $phone,
+        ]);
+
+        if (filled($data['car_name'] ?? null)) {
+            Car::create([
+                'user_id' => $onecUser->id,
+                'phone' => $phone,
+                'name' => $data['car_name'],
+                'vin_code' => $data['vin_code'] ?? null,
+            ]);
+        }
 
         return $this->onec->createUser($data['name'], $data['phone'])->toJsonResponse();
     }
@@ -89,14 +111,16 @@ class OneCController extends Controller
         $data = $request->validate([
             'phone' => ['required', 'string', 'max:20'],
             'name' => ['required', 'string', 'max:255'],
+            'vin_code' => ['nullable', 'string', 'max:255'],
         ]);
 
         $phone = preg_replace('/\D+/', '', $data['phone']) ?? '';
 
         $car = Car::create([
-            'user_id' => User::where('phone', $phone)->value('id'),
+            'user_id' => OnecUser::where('phone', $phone)->orderByDesc('id')->value('id'),
             'phone' => $phone,
             'name' => $data['name'],
+            'vin_code' => $data['vin_code'] ?? null,
         ]);
 
         return response()->json([
@@ -104,6 +128,7 @@ class OneCController extends Controller
             'userId' => $car->user_id,
             'phone' => $car->phone,
             'name' => $car->name,
+            'vinCode' => $car->vin_code,
         ], 201);
     }
 
@@ -156,6 +181,7 @@ class OneCController extends Controller
                 'userId' => $car->user_id,
                 'phone' => $car->phone,
                 'name' => $car->name,
+                'vinCode' => $car->vin_code,
             ]);
 
         return response()->json($cars, 200);

@@ -15,11 +15,12 @@ class Car extends Model
         'user_id',
         'phone',
         'name',
+        'vin_code',
     ];
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(OnecUser::class, 'user_id');
     }
 
     public function oilChanges(): HasMany
