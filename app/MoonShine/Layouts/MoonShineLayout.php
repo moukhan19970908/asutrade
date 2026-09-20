@@ -40,6 +40,8 @@ use App\MoonShine\Resources\BrandResource;
 use App\MoonShine\Resources\UserResource;
 use App\MoonShine\Resources\OrderResource;
 use App\MoonShine\Resources\PersonalDiscountResource;
+use App\MoonShine\Resources\CarMarkResource;
+use App\MoonShine\Resources\CarModelResource;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Email;
@@ -73,6 +75,10 @@ final class MoonShineLayout extends AppLayout
                     MenuItem::make('Пользователи', UserResource::class),
                     MenuItem::make('Заказы', OrderResource::class),
                     MenuItem::make('Скидки', PersonalDiscountResource::class),
+                ]),
+                MenuGroup::make('Справочники', [
+                    MenuItem::make('Марки', CarMarkResource::class),
+                    MenuItem::make('Модели', CarModelResource::class),
                 ]),
             ];
         }

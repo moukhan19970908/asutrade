@@ -18,6 +18,8 @@ use App\MoonShine\Resources\UserResource;
 use App\MoonShine\Resources\OrderResource;
 use App\MoonShine\Resources\OrderItemResource;
 use App\MoonShine\Resources\PersonalDiscountResource;
+use App\MoonShine\Resources\CarMarkResource;
+use App\MoonShine\Resources\CarModelResource;
 use MoonShine\Laravel\Models\MoonshineUser;
 use MoonShine\Laravel\MoonShineAuth;
 use MoonShine\MenuManager\MenuItem;
@@ -44,6 +46,8 @@ class MoonShineServiceProvider extends ServiceProvider
                 OrderResource::class,
                 OrderItemResource::class,
                 PersonalDiscountResource::class,
+                CarMarkResource::class,
+                CarModelResource::class,
             ])
             ->pages([
                 ...$config->getPages(),
@@ -62,6 +66,10 @@ class MoonShineServiceProvider extends ServiceProvider
             ]),
             MenuItem::make('Пользователи', [
                 MenuItem::make('Пользователи', new UserResource()),
+            ]),
+            MenuItem::make('Справочники', [
+                MenuItem::make('Марки', CarMarkResource::class),
+                MenuItem::make('Модели', CarModelResource::class),
             ]),
             MenuItem::make('Заказы', [
                 MenuItem::make('Заказы', new OrderResource()),

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CarReferenceController;
 use App\Http\Controllers\Api\OneCController;
 use App\Http\Controllers\Api\OtpController;
 use App\Http\Controllers\Api\WhatsAppController;
@@ -43,4 +44,14 @@ Route::controller(WhatsAppController::class)->group(function () {
 Route::controller(OtpController::class)->group(function () {
     Route::post('/sendOtp', 'sendOtp')->name('api.sendOtp');
     Route::post('/verifyOtp', 'verifyOtp')->name('api.verifyOtp');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Справочник марок и моделей машин
+|--------------------------------------------------------------------------
+*/
+Route::controller(CarReferenceController::class)->group(function () {
+    Route::get('/getMarks', 'getMarks')->name('api.getMarks');
+    Route::get('/getModels', 'getModels')->name('api.getModels');
 });

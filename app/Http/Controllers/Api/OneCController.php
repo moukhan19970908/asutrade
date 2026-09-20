@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Car;
+use App\Models\CarModel;
 use App\Models\OilChange;
 use App\Models\OnecUser;
 use App\Services\GreenApi\GreenApiClient;
@@ -45,18 +46,16 @@ class OneCController extends Controller
      * Номер должен быть заранее подтверждён кодом из WhatsApp
      * (POST /api/sendOtp → POST /api/verifyOtp), иначе 403.
      *
-     * Сохраняет клиента в локальной таблице onec_users и, если передан
-     * car_name, сразу создаёт привязанный к нему автомобиль. Затем шлёт
-     * приветствие в WhatsApp и уходит в 1С — её ответ пробрасывается наружу
-     * как есть.
+     * Сохраняет клиента в локальной таблице onec_users, шлёт приветствие
+     * в WhatsApp и уходит в 1С — её ответ пробрасывается наружу как есть.
+     *
+     * Машины здесь не заводятся: для этого есть POST /api/createCar.
      */
     public function createUser(Request $request): JsonResponse
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:20'],
-            'car_name' => ['nullable', 'string', 'max:255'],
-            'vin_code' => ['nullable', 'string', 'max:255'],
         ]);
 
         $phone = preg_replace('/\D+/', '', $data['phone']) ?? '';
@@ -70,19 +69,10 @@ class OneCController extends Controller
         // Подтверждение одноразовое: повторно создать клиента тем же кодом нельзя.
         $this->otp->consume($phone);
 
-        $onecUser = OnecUser::create([
+        OnecUser::create([
             'name' => $data['name'],
             'phone' => $phone,
         ]);
-
-        if (filled($data['car_name'] ?? null)) {
-            Car::create([
-                'user_id' => $onecUser->id,
-                'phone' => $phone,
-                'name' => $data['car_name'],
-                'vin_code' => $data['vin_code'] ?? null,
-            ]);
-        }
 
         $this->sendWelcomeMessage($phone, $data['name']);
 
@@ -150,31 +140,64 @@ class OneCController extends Controller
      *
      * Сохраняет автомобиль клиента в локальной БД. Если клиент с таким
      * телефоном есть в приложении — привязывает машину к нему.
+     *
+     * Машину можно завести двумя способами:
+     *  - model_id из справочника (/api/getModels) — тогда name соберётся
+     *    из марки и модели, если его не прислали;
+     *  - name произвольным текстом, как раньше.
      */
     public function createCar(Request $request): JsonResponse
     {
         $data = $request->validate([
             'phone' => ['required', 'string', 'max:20'],
-            'name' => ['required', 'string', 'max:255'],
+            'model_id' => ['required_without:name', 'nullable', 'integer', 'exists:car_models,id'],
+            'name' => ['required_without:model_id', 'nullable', 'string', 'max:255'],
             'vin_code' => ['nullable', 'string', 'max:255'],
         ]);
 
         $phone = preg_replace('/\D+/', '', $data['phone']) ?? '';
 
+        $model = isset($data['model_id'])
+            ? CarModel::with('mark')->find($data['model_id'])
+            : null;
+
         $car = Car::create([
             'user_id' => OnecUser::where('phone', $phone)->orderByDesc('id')->value('id'),
             'phone' => $phone,
-            'name' => $data['name'],
+            'name' => $data['name'] ?? $this->carNameFromModel($model),
+            'model_id' => $model?->id,
             'vin_code' => $data['vin_code'] ?? null,
         ]);
 
-        return response()->json([
+        $car->setRelation('carModel', $model);
+
+        return response()->json($this->carToArray($car), 201);
+    }
+
+    /**
+     * Название машины из справочника: «Марка Модель».
+     */
+    protected function carNameFromModel(?CarModel $model): string
+    {
+        return trim(($model?->mark?->name ?? '').' '.($model?->name ?? ''));
+    }
+
+    /**
+     * Единый формат машины в ответах API.
+     */
+    protected function carToArray(Car $car): array
+    {
+        return [
             'id' => $car->id,
             'userId' => $car->user_id,
             'phone' => $car->phone,
             'name' => $car->name,
+            'modelId' => $car->model_id,
+            'modelName' => $car->carModel?->name,
+            'markId' => $car->carModel?->mark_id,
+            'markName' => $car->carModel?->mark?->name,
             'vinCode' => $car->vin_code,
-        ], 201);
+        ];
     }
 
     /**
@@ -218,16 +241,11 @@ class OneCController extends Controller
 
         $phone = preg_replace('/\D+/', '', $data['phone']) ?? '';
 
-        $cars = Car::where('phone', $phone)
+        $cars = Car::with('carModel.mark')
+            ->where('phone', $phone)
             ->orderByDesc('id')
             ->get()
-            ->map(fn (Car $car) => [
-                'id' => $car->id,
-                'userId' => $car->user_id,
-                'phone' => $car->phone,
-                'name' => $car->name,
-                'vinCode' => $car->vin_code,
-            ]);
+            ->map(fn (Car $car) => $this->carToArray($car));
 
         return response()->json($cars, 200);
     }
