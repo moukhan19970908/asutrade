@@ -16,6 +16,7 @@ Route::get('/ping', fn () => response()->json(['pong' => true]));
 Route::controller(OneCController::class)->group(function () {
     Route::get('/checkUser', 'checkUser')->name('api.checkUser');
     Route::post('/createUser', 'createUser')->name('api.createUser');
+    Route::post('/deleteAccount', 'deleteAccount')->name('api.deleteAccount');
     Route::get('/getLevels', 'getLevels')->name('api.getLevels');
     Route::get('/getHistory', 'getHistory')->name('api.getHistory');
     Route::get('/getOilChangeHistory', 'getOilChangeHistory')->name('api.getOilChangeHistory');

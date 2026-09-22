@@ -66,6 +66,8 @@ return [
         ),
         // Требовать подтверждённый номер в POST /api/createUser.
         'required_on_register' => filter_var(env('OTP_REQUIRED_ON_REGISTER', true), FILTER_VALIDATE_BOOL),
+        // Требовать подтверждённый номер в POST /api/deleteAccount.
+        'required_on_delete' => filter_var(env('OTP_REQUIRED_ON_DELETE', true), FILTER_VALIDATE_BOOL),
     ],
 
     'slack' => [

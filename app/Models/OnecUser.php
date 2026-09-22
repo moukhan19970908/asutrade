@@ -16,6 +16,7 @@ class OnecUser extends Model
     protected $fillable = [
         'name',
         'phone',
+        'firebase_token',
     ];
 
     public function cars(): HasMany

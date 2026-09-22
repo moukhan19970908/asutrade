@@ -118,6 +118,8 @@
                 <ul class="space-y-2 text-gray-300">
                     <li><a href="{{route('about')}}" class="hover:text-white">О компании</a></li>
                     <li><a href="{{route('delivery')}}" class="hover:text-white">Доставка</a></li>
+                    <li><a href="{{route('user-agreement')}}" class="hover:text-white">Пользовательское соглашение</a></li>
+                    <li><a href="{{route('privacy-policy')}}" class="hover:text-white">Политика конфиденциальности</a></li>
                 </ul>
             </div>
             <div>

@@ -18,6 +18,8 @@ Route::prefix('admin/import')->name('admin.products.')->group(function () {
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/delivery', [HomeController::class, 'delivery'])->name('delivery');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
+Route::get('/user-agreement', [HomeController::class, 'userAgreement'])->name('user-agreement');
+Route::get('/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('privacy-policy');
 // Каталог
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
