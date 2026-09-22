@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SupportController;
 
 // Маршруты импорта товаров в админке (с отдельным префиксом) - В НАЧАЛЕ ФАЙЛА
 Route::prefix('admin/import')->name('admin.products.')->group(function () {
@@ -20,6 +21,10 @@ Route::get('/delivery', [HomeController::class, 'delivery'])->name('delivery');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/user-agreement', [HomeController::class, 'userAgreement'])->name('user-agreement');
 Route::get('/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('privacy-policy');
+
+// Техподдержка
+Route::get('/support', [SupportController::class, 'index'])->name('support');
+Route::post('/support', [SupportController::class, 'store'])->name('support.store')->middleware('throttle:5,1');
 // Каталог
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');

@@ -120,6 +120,7 @@
                     <li><a href="{{route('delivery')}}" class="hover:text-white">Доставка</a></li>
                     <li><a href="{{route('user-agreement')}}" class="hover:text-white">Пользовательское соглашение</a></li>
                     <li><a href="{{route('privacy-policy')}}" class="hover:text-white">Политика конфиденциальности</a></li>
+                    <li><a href="{{route('support')}}" class="hover:text-white">Техподдержка</a></li>
                 </ul>
             </div>
             <div>
