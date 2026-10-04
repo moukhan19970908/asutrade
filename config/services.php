@@ -68,6 +68,13 @@ return [
         'required_on_register' => filter_var(env('OTP_REQUIRED_ON_REGISTER', true), FILTER_VALIDATE_BOOL),
         // Требовать подтверждённый номер в POST /api/deleteAccount.
         'required_on_delete' => filter_var(env('OTP_REQUIRED_ON_DELETE', true), FILTER_VALIDATE_BOOL),
+        // Номера для проверки приложения (App Store / Google Play): код в WhatsApp
+        // не уходит, а всегда равен test_code. Несколько номеров — через запятую.
+        'test_numbers' => array_values(array_filter(array_map(
+            static fn ($number) => preg_replace('/\D+/', '', (string) $number),
+            explode(',', (string) env('OTP_TEST_NUMBERS', '77058056564')),
+        ))),
+        'test_code' => (string) env('OTP_TEST_CODE', '1234'),
     ],
 
     'slack' => [

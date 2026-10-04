@@ -43,6 +43,24 @@ class OtpService
         }
 
         $ttl = (int) config('services.otp.ttl');
+
+        // Номер для проверки приложения: код фиксированный, в WhatsApp ничего
+        // не уходит — у проверяющего нет доступа к этому номеру.
+        if ($this->isTestNumber($phone)) {
+            OtpCode::create([
+                'phone' => $phone,
+                'code' => (string) config('services.otp.test_code'),
+                'expires_at' => now()->addSeconds($ttl),
+            ]);
+
+            return ['status' => 200, 'data' => [
+                'status' => 'sent',
+                'phone' => $phone,
+                'expiresIn' => $ttl,
+                'idMessage' => null,
+            ]];
+        }
+
         $code = $this->generateCode();
 
         $message = strtr((string) config('services.otp.message'), [
@@ -158,6 +176,14 @@ class OtpService
         $window = (int) config('services.otp.verification_ttl');
 
         return $otp->verified_at->addSeconds($window)->isFuture() ? $otp : null;
+    }
+
+    /**
+     * Номер из services.otp.test_numbers — для проверки приложения в сторах.
+     */
+    protected function isTestNumber(string $phone): bool
+    {
+        return in_array($phone, (array) config('services.otp.test_numbers', []), true);
     }
 
     protected function generateCode(): string
