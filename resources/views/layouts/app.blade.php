@@ -126,7 +126,7 @@
             <div>
                 <h4 class="text-md font-semibold mb-4">Контакты</h4>
                 <div class="space-y-2 text-gray-300">
-                    <p>+7 (707) 436 02 15</p>
+                    <p>+7 (778) 808 40 30</p>
                     <p class="flex items-center">
                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512"
                              class="mr-2" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
