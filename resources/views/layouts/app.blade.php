@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-55Q5PPPB"></script>
+    <!-- Google tag (gtag.js) — Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-709GH76M0D"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
+      gtag('config', 'G-709GH76M0D');
     </script>
 
     <title>@yield('title', 'Asu Trade')</title>
@@ -24,10 +25,6 @@
     <link rel="apple-touch-icon" href="{{ asset('img/logo.png') }}">
 </head>
 <body class="bg-gray-50">
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-55Q5PPPB"
-        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-
 <!-- Header -->
 <header class="bg-yellow-50 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
