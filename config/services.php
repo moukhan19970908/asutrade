@@ -42,13 +42,6 @@ return [
         'api_token' => (string) env('GREENAPI_API_TOKEN', ''),
         'timeout' => (int) env('GREENAPI_TIMEOUT', 20),
         'verify_ssl' => filter_var(env('GREENAPI_VERIFY_SSL', true), FILTER_VALIDATE_BOOL),
-
-        // Приветствие после регистрации клиента (:name — имя из запроса).
-        'welcome_enabled' => filter_var(env('GREENAPI_WELCOME_ENABLED', true), FILTER_VALIDATE_BOOL),
-        'welcome_message' => env(
-            'GREENAPI_WELCOME_MESSAGE',
-            ':name, добро пожаловать в ASU Auto! Вы зарегистрированы в программе лояльности.',
-        ),
     ],
 
     'otp' => [
