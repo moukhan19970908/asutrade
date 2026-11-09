@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -9,16 +10,33 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
+    use HasSlug;
+
     protected $fillable = [
         'category_id',
         'brand_id',
         'name',
+        'slug',
         'description',
         'price',
         'image',
         'in_stock',
         'code',
     ];
+
+    /**
+     * Артикул разводит одноимённые позиции: у товаров из 1С названия
+     * повторяются часто, а код уникален.
+     */
+    protected function slugDisambiguator(): ?string
+    {
+        return $this->code;
+    }
+
+    protected function slugFallbackPrefix(): string
+    {
+        return 'tovar';
+    }
 
     protected $casts = [
         'price' => 'decimal:2',

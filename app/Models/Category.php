@@ -2,17 +2,26 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
+    use HasSlug;
+
     protected $fillable = [
         'name',
+        'slug',
         'image',
         'parent_id'
     ];
+
+    protected function slugFallbackPrefix(): string
+    {
+        return 'category';
+    }
 
     protected static function booted()
     {

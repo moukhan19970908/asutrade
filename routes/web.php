@@ -3,8 +3,13 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LegacyUrlController;
+use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\StoreController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SupportController;
@@ -16,6 +21,8 @@ Route::prefix('admin/import')->name('admin.products.')->group(function () {
 });
 
 // Главная страница
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/delivery', [HomeController::class, 'delivery'])->name('delivery');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
@@ -27,8 +34,30 @@ Route::get('/support', [SupportController::class, 'index'])->name('support');
 Route::post('/support', [SupportController::class, 'store'])->name('support.store')->middleware('throttle:5,1');
 // Каталог
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
-Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
-Route::get('/category/{category}', [CatalogController::class, 'category'])->name('catalog.category');
+
+// Старый адрес товара /catalog/123. Объявлен до /catalog/{category},
+// иначе числовой id попытается найтись среди слагов категорий.
+Route::get('/catalog/{product}', [LegacyUrlController::class, 'product'])
+    ->whereNumber('product')
+    ->name('legacy.product');
+
+Route::get('/catalog/{category}', [CatalogController::class, 'category'])->name('catalog.category');
+Route::get('/product/{product}', [CatalogController::class, 'show'])->name('catalog.show');
+
+// Старый адрес категории /category/5.
+Route::get('/category/{category}', [LegacyUrlController::class, 'category'])
+    ->whereNumber('category')
+    ->name('legacy.category');
+
+// Бренды: вторая ось каталога рядом с категориями.
+Route::get('/brands', [BrandController::class, 'index'])->name('brands.index');
+Route::get('/brands/{brand}', [BrandController::class, 'show'])->name('brands.show');
+
+Route::get('/akcii', [PromotionController::class, 'index'])->name('promotions.index');
+
+// Магазины по городам: локальный поиск («автозапчасти Актау»).
+Route::get('/magaziny', [StoreController::class, 'index'])->name('stores.index');
+Route::get('/magaziny/{city}', [StoreController::class, 'show'])->name('stores.show');
 
 // Корзина
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
@@ -41,8 +70,8 @@ Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear
 Route::prefix('{locale}')->where(['locale' => 'ru|kz'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home.locale');
     Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index.locale');
-    Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show.locale');
-    Route::get('/category/{category}', [CatalogController::class, 'category'])->name('catalog.category.locale');
+    Route::get('/catalog/{category}', [CatalogController::class, 'category'])->name('catalog.category.locale');
+    Route::get('/product/{product}', [CatalogController::class, 'show'])->name('catalog.show.locale');
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index.locale');
     Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add.locale');
     Route::put('/cart/update/{cartItem}', [CartController::class, 'update'])->name('cart.update.locale');

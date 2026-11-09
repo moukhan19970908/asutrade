@@ -1,2 +1,18 @@
 User-agent: *
-Disallow:
+
+# Личные разделы и служебные страницы — индексировать нечего
+Disallow: /cart
+Disallow: /checkout
+Disallow: /orders
+Disallow: /profile
+Disallow: /login
+Disallow: /admin/
+
+# Результаты поиска плодят бесконечные адреса
+Disallow: /*?search=
+
+# Языковые префиксы /ru/ и /kz/ намеренно открыты для обхода:
+# дубль снимается тегом canonical, а чтобы его увидеть, робот должен
+# иметь возможность загрузить страницу.
+
+Sitemap: https://asu-trade.com/sitemap.xml

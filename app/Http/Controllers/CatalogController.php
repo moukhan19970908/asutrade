@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Warehouse;
@@ -41,7 +42,7 @@ class CatalogController extends Controller
 
     public function show(Product $product)
     {
-        $product->load('category');
+        $product->load('category', 'brand');
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->take(4)
@@ -109,10 +110,28 @@ class CatalogController extends Controller
             $query->where('in_stock', $request->in_stock);
         }
 
-        $products = $query->paginate(12);
+        // Бренды, встречающиеся в этой категории, — для фильтра.
+        // Считаем до применения фильтра по бренду, иначе после выбора
+        // в списке остался бы один пункт и вернуться было бы некуда.
+        $brands = Brand::query()
+            ->whereIn('id', (clone $query)->select('brand_id')->whereNotNull('brand_id'))
+            ->orderBy('name')
+            ->get();
+
+        $activeBrand = null;
+
+        if ($request->filled('brand')) {
+            $activeBrand = Brand::where('slug', $request->string('brand'))->first();
+
+            if ($activeBrand) {
+                $query->where('brand_id', $activeBrand->id);
+            }
+        }
+
+        $products = $query->paginate(12)->withQueryString();
         $categories = Category::whereNull('parent_id')->with('children')->get();
 
-        return view('catalog.index', compact('products', 'categories', 'category'));
+        return view('catalog.index', compact('products', 'categories', 'category', 'brands', 'activeBrand'));
     }
 
     private function getProductStockInfo(Product $product)

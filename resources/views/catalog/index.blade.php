@@ -1,7 +1,30 @@
 @extends('layouts.app')
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-@section('title', 'Каталог товаров - ASU Trade')
+@section('title', isset($category) ? $category->name.' — купить в Актау, Жанаозене и Актобе | Asu Trade' : 'Каталог автозапчастей, масел и фильтров — Asu Trade')
+@section('description', isset($category)
+    ? $category->name.' в наличии в магазинах Asu Trade — Актау, Жанаозен, Актобе. Доставка по Казахстану.'
+    : 'Каталог Asu Trade: моторные и трансмиссионные масла, воздушные, масляные, салонные и топливные фильтры, антифриз, автохимия и смазки.')
+
+@php
+    $trail = [];
+
+    if (isset($category)) {
+        $trail[] = ['name' => 'Каталог', 'url' => route('catalog.index')];
+
+        if ($category->parent) {
+            $trail[] = ['name' => $category->parent->name, 'url' => route('catalog.category', $category->parent)];
+        }
+
+        $trail[] = ['name' => $category->name];
+    } else {
+        $trail[] = ['name' => 'Каталог'];
+    }
+@endphp
+
+@push('schema')
+    @include('partials.schema-breadcrumbs', ['trail' => $trail])
+@endpush
 
 <style>
     body {
@@ -107,6 +130,26 @@
         <!-- Products grid -->
         <div class="lg:w-3/4">
             <div class="flex justify-between items-center mb-6">
+                @include('partials.breadcrumbs', ['trail' => $trail])
+
+                @if(($brands ?? collect())->isNotEmpty())
+                    <div class="mb-4">
+                        <div class="text-sm font-medium text-gray-700 mb-2">Бренды в категории</div>
+                        <div class="flex flex-wrap gap-2">
+                            <a href="{{ route('catalog.category', $category) }}"
+                               class="px-3 py-1 rounded-full text-sm {{ empty($activeBrand) ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-700' }}">
+                                Все
+                            </a>
+                            @foreach($brands as $brand)
+                                <a href="{{ route('catalog.category', ['category' => $category, 'brand' => $brand->slug]) }}"
+                                   class="px-3 py-1 rounded-full text-sm {{ optional($activeBrand)->id === $brand->id ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-700' }}">
+                                    {{ $brand->name }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
                 <h1 class="text-2xl font-bold text-gray-900">
                     @if(isset($category))
                         {{ $category->name }}

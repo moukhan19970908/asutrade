@@ -1,6 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'ASU Trade - Главная')
+@section('title', 'Автозапчасти, масла и фильтры в Актау, Жанаозене и Актобе — Asu Trade')
+@section('description', 'Магазины Asu Trade: моторные и трансмиссионные масла, воздушные, масляные, салонные и топливные фильтры, антифриз, автохимия. Актау, Жанаозен, Актобе — доставка по Казахстану.')
+
+{{-- Разметка магазинов сети: только на главной --}}
+@push('schema')
+    @include('partials.schema-stores')
+@endpush
 
 <style>
     body {
@@ -64,8 +70,15 @@
     <!-- Hero Section -->
     <section class="mb-8">
         <div class="rounded-lg overflow-hidden shadow-lg">
-            <img src="{{ asset('img/banner.webp') }}" alt="Auto Parts Banner" class="w-full h-auto max-h-96 object-cover">
+            <img src="{{ asset('img/banner.webp') }}" alt="Автозапчасти Asu Trade" class="w-full h-auto max-h-96 object-cover">
         </div>
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mt-6">
+            Автозапчасти, масла и фильтры в Актау, Жанаозене и Актобе
+        </h1>
+        <p class="text-gray-600 mt-2 max-w-3xl">
+            Моторные и трансмиссионные масла, фильтры, антифриз, автохимия и смазки.
+            Пять магазинов в трёх городах и доставка по Казахстану.
+        </p>
     </section>
 
     <!-- Категории -->
@@ -202,7 +215,8 @@
         <h2 class="text-2xl font-bold text-gray-900 mb-6">Популярные бренды</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             @foreach($popularBrands as $brand)
-                <div class="bg-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-4 text-center">
+                <a href="{{ route('brands.show', $brand) }}"
+                   class="block bg-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-4 text-center">
                     @if($brand->logo)
                         <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}" class="w-10 h-10 mx-auto mb-2 object-contain">
                     @else
@@ -212,7 +226,7 @@
                     @endif
                     <div class="font-semibold text-gray-900 text-sm">{{ $brand->name }}</div>
                     <div class="text-gray-500 text-xs">{{ Str::limit($brand->description, 40) }}</div>
-                </div>
+                </a>
             @endforeach
         </div>
     </section>

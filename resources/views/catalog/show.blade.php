@@ -1,21 +1,29 @@
 @extends('layouts.app')
 
-@section('title', $product->name . ' - ASU Trade')
+@section('title', $product->name.($product->code ? ' ('.$product->code.')' : '').' — купить в Asu Trade')
+@section('description', \Illuminate\Support\Str::limit(
+    $product->description ?: $product->name.($product->brand ? ', '.$product->brand->name : '').'. В наличии в магазинах Asu Trade — Актау, Жанаозен, Актобе.',
+    160))
+@if($product->image)
+    @section('og_image', asset('storage/'.$product->image))
+@endif
+
+@php
+    $trail = array_values(array_filter([
+        ['name' => 'Каталог', 'url' => route('catalog.index')],
+        $product->category ? ['name' => $product->category->name, 'url' => route('catalog.category', $product->category)] : null,
+        ['name' => $product->name],
+    ]));
+@endphp
+
+@push('schema')
+    @include('partials.schema-product')
+    @include('partials.schema-breadcrumbs', ['trail' => $trail])
+@endpush
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    <!-- Breadcrumb -->
-    <nav class="mb-6">
-        <ol class="flex items-center space-x-2 text-sm text-gray-500">
-            <li><a href="{{ route('home') }}" class="hover:text-blue-600">Главная</a></li>
-            <li><i class="fas fa-chevron-right text-xs"></i></li>
-            <li><a href="{{ route('catalog.index') }}" class="hover:text-blue-600">Каталог</a></li>
-            <li><i class="fas fa-chevron-right text-xs"></i></li>
-            <li><a href="{{ route('catalog.category', $product->category) }}" class="hover:text-blue-600">{{ $product->category->name }}</a></li>
-            <li><i class="fas fa-chevron-right text-xs"></i></li>
-            <li class="text-gray-900">{{ $product->name }}</li>
-        </ol>
-    </nav>
+    @include('partials.breadcrumbs', ['trail' => $trail])
 
     <div class="flex flex-col lg:flex-row gap-8">
         <!-- Sidebar -->
