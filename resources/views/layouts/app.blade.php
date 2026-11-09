@@ -148,6 +148,7 @@
                     <li><a href="{{route('catalog.index')}}" class="hover:text-white">Каталог</a></li>
                     <li><a href="{{route('brands.index')}}" class="hover:text-white">Бренды</a></li>
                     <li><a href="{{route('promotions.index')}}" class="hover:text-white">Акции</a></li>
+                    <li><a href="{{route('mobile-app.index')}}" class="hover:text-white">Приложение</a></li>
                     <li><a href="{{route('about')}}" class="hover:text-white">О компании</a></li>
                     <li><a href="{{route('delivery')}}" class="hover:text-white">Доставка</a></li>
                     <li><a href="{{route('user-agreement')}}" class="hover:text-white">Пользовательское соглашение</a></li>
@@ -178,5 +179,6 @@
 
 <!-- Alpine.js for dropdown functionality -->
 <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+@stack('scripts')
 </body>
 </html>

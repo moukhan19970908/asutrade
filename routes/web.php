@@ -4,6 +4,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegacyUrlController;
+use App\Http\Controllers\MobileAppController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StoreController;
 use Illuminate\Support\Facades\Route;
@@ -58,6 +59,12 @@ Route::get('/akcii', [PromotionController::class, 'index'])->name('promotions.in
 // Магазины по городам: локальный поиск («автозапчасти Актау»).
 Route::get('/magaziny', [StoreController::class, 'index'])->name('stores.index');
 Route::get('/magaziny/{city}', [StoreController::class, 'show'])->name('stores.show');
+
+// Мобильное приложение: инструкция по платформе и отдача APK
+// с правильным Content-Type.
+Route::get('/prilozhenie', [MobileAppController::class, 'index'])->name('mobile-app.index');
+Route::get('/download/asuauto.apk', [MobileAppController::class, 'download'])->name('mobile-app.download');
+Route::redirect('/app', '/prilozhenie', 301);
 
 // Корзина
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');

@@ -41,6 +41,7 @@ class SitemapController extends Controller
         $urls[] = $this->url(route('brands.index'), '0.8', 'weekly');
         $urls[] = $this->url(route('stores.index'), '0.7', 'monthly');
         $urls[] = $this->url(route('promotions.index'), '0.4', 'weekly');
+        $urls[] = $this->url(route('mobile-app.index'), '0.6', 'monthly');
 
         foreach (array_keys(config('stores.cities')) as $city) {
             $urls[] = $this->url(route('stores.show', $city), '0.7', 'monthly');
