@@ -30,7 +30,10 @@
     <meta property="og:url" content="{{ \App\Support\Seo::canonical() }}">
     <meta property="og:image" content="@yield('og_image', asset('img/logo.png'))">
     <meta name="twitter:card" content="summary_large_image">
-    <script src="https://cdn.tailwindcss.com"></script>
+    {{-- Tailwind собирается через Vite. Раньше здесь был cdn.tailwindcss.com:
+         407 КБ блокирующего JS, компилировавшего CSS прямо в браузере
+         на каждой загрузке. Теперь 35 КБ готового CSS. --}}
+    @vite(['resources/css/app.css'])
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
     <link rel="manifest" href="{{ asset('manifest.json') }}">

@@ -13,7 +13,11 @@
 /.zed
 /auth.json
 /node_modules
-/public/build
+# /public/build НЕ игнорируется намеренно: деплой идёт обычным git pull,
+# node на сервере может не быть. Собранный CSS коммитится вместе с кодом.
+# ВАЖНО: после правки blade-файлов нужно заново выполнить npm run build,
+# иначе новые Tailwind-классы не попадут в CSS.
+# /public/build
 /public/hot
 /public/storage
 /storage/*.key
