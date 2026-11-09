@@ -150,6 +150,30 @@
                     </div>
                 @endif
 
+                @if(isset($category))
+                    @php($cityRows = collect(config('stores.cities'))
+                        ->map(fn ($data, $slug) => [
+                            'slug' => $slug,
+                            'prepositional' => $data['name_prepositional'],
+                            'count' => \App\Support\CityCatalog::count($category, $slug),
+                        ])
+                        ->filter(fn ($row) => $row['count'] > 0))
+
+                    @if($cityRows->isNotEmpty())
+                        <div class="mb-4">
+                            <div class="text-sm font-medium text-gray-700 mb-2">Наличие по городам</div>
+                            <div class="flex flex-wrap gap-2">
+                                @foreach($cityRows as $row)
+                                    <a href="{{ route('catalog.city', ['category' => $category, 'city' => $row['slug']]) }}"
+                                       class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-sm">
+                                        в {{ $row['prepositional'] }} <span class="text-gray-400">({{ $row['count'] }})</span>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                @endif
+
                 <h1 class="text-2xl font-bold text-gray-900">
                     @if(isset($category))
                         {{ $category->name }}

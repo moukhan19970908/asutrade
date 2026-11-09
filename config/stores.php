@@ -17,6 +17,12 @@ return [
         'aktau' => [
             'name' => 'Актау',
             'name_prepositional' => 'Актау',
+
+            // Склады 1С, относящиеся к городу. Сверяется с warehouses.name
+            // без учёта регистра. Посмотреть реальные имена:
+            // php artisan stores:warehouses
+            'warehouses' => ['Актау'],
+
             'points' => [
                 [
                     'slug' => 'kulager',
@@ -39,6 +45,7 @@ return [
         'zhanaozen' => [
             'name' => 'Жанаозен',
             'name_prepositional' => 'Жанаозене',
+            'warehouses' => ['Жанаозен'],
             'points' => [
                 [
                     'slug' => 'centr',
@@ -51,6 +58,7 @@ return [
         'aktobe' => [
             'name' => 'Актобе',
             'name_prepositional' => 'Актобе',
+            'warehouses' => ['Актобе'],
             'points' => [
                 [
                     'slug' => 'nokina',

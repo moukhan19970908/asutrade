@@ -18,7 +18,7 @@
     @php($seoDescription = trim($__env->yieldContent('description', 'Автозапчасти, масла, фильтры и автохимия в Актау, Жанаозене и Актобе. Доставка по Казахстану.')))
     <meta name="description" content="{{ $seoDescription }}">
     <link rel="canonical" href="{{ \App\Support\Seo::canonical() }}">
-    @if($seoRobots = \App\Support\Seo::robots())
+    @if($seoRobots = ($metaRobots ?? \App\Support\Seo::robots()))
         <meta name="robots" content="{{ $seoRobots }}">
     @endif
 

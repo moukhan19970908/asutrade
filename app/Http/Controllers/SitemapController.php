@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
+use App\Support\CityCatalog;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
@@ -74,6 +75,22 @@ class SitemapController extends Controller
                     );
                 }
             });
+
+        // Городские страницы каталога: только те, где товаров достаточно.
+        // Тонкие варианты в карту не кладём — они и так под noindex.
+        foreach (array_keys(config('stores.cities')) as $citySlug) {
+            foreach (CityCatalog::categoriesWithStock($citySlug) as $row) {
+                if ($row['count'] < CityCatalog::MIN_PRODUCTS) {
+                    continue;
+                }
+
+                $urls[] = $this->url(
+                    route('catalog.city', ['category' => $row['category'], 'city' => $citySlug]),
+                    '0.8',
+                    'daily',
+                );
+            }
+        }
 
         Product::query()
             ->withoutGlobalScopes()

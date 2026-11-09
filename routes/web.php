@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\CityCatalogController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegacyUrlController;
 use App\Http\Controllers\MobileAppController;
@@ -43,6 +44,9 @@ Route::get('/catalog/{product}', [LegacyUrlController::class, 'product'])
     ->name('legacy.product');
 
 Route::get('/catalog/{category}', [CatalogController::class, 'category'])->name('catalog.category');
+// Категория в городе: опирается на остатки склада этого города.
+Route::get('/catalog/{category}/{city}', [CityCatalogController::class, 'show'])->name('catalog.city');
+
 Route::get('/product/{product}', [CatalogController::class, 'show'])->name('catalog.show');
 
 // Старый адрес категории /category/5.
