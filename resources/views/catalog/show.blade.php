@@ -50,7 +50,7 @@
                 <div class="lg:w-1/2">
                     <div class="bg-white rounded-lg shadow-md p-6">
                         @if($product->image)
-                            <img src="{{ asset('storage/' . $product->image) }}" class="w-full h-auto rounded-lg" alt="{{ $product->name }}">
+                            <img src="{{ asset('storage/' . $product->image) }}" class="w-full h-auto rounded-lg" alt="{{ $product->name }}" loading="lazy" decoding="async">
                         @else
                             <div class="bg-gray-100 rounded-lg py-12 text-center">
                                 <i class="fas fa-image text-gray-400 text-5xl mb-4"></i>
@@ -194,7 +194,7 @@
                                  @if($product->image)
                                      <img src="{{ asset('storage/' . $product->image) }}"
                                           alt="{{ $product->name }}"
-                                          class="w-full h-48 object-cover">
+                                          class="w-full h-48 object-cover" loading="lazy" decoding="async">
                                  @else
                                      <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
                                          <i class="fas fa-image text-gray-400 text-4xl"></i>
@@ -233,7 +233,7 @@
                                 @if($product->image)
                                     <img src="{{ asset('storage/' . $product->image) }}"
                                          alt="{{ $product->name }}"
-                                         class="w-full h-48 object-cover">
+                                         class="w-full h-48 object-cover" loading="lazy" decoding="async">
                                 @else
                                     <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
                                         <i class="fas fa-image text-gray-400 text-4xl"></i>

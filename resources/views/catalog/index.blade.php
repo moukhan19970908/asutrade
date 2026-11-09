@@ -1,6 +1,5 @@
 @extends('layouts.app')
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 @section('title', isset($category) ? $category->name.' — купить в Актау, Жанаозене и Актобе | Asu Trade' : 'Каталог автозапчастей, масел и фильтров — Asu Trade')
 @section('description', isset($category)
     ? $category->name.' в наличии в магазинах Asu Trade — Актау, Жанаозен, Актобе. Доставка по Казахстану.'
@@ -199,7 +198,7 @@
                                 @if($product->image)
                                     <img src="{{ asset('storage/' . $product->image) }}"
                                          alt="{{ $product->name }}"
-                                         class="w-full h-48 shadow-yellow-50 object-contain">
+                                         class="w-full h-48 shadow-yellow-50 object-contain" loading="lazy" decoding="async">
                                 @else
                                     <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
                                         <i class="fas fa-image text-gray-400 text-4xl"></i>
@@ -245,7 +244,7 @@
                 </div>
 
                 <div class="mt-8">
-                    {{ $products->appends(request()->except('page'))->links('pagination::bootstrap-4') }}
+                    {{ $products->appends(request()->except('page'))->links() }}
                 </div>
             @else
                 <div class="text-center py-12">

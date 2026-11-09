@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Пользовательское соглашение — Asu Oil Trade')
+@section('title', 'Пользовательское соглашение — Asu Trade')
+@section('description', 'Условия использования сайта и мобильного приложения Asu Trade: правила заказа, оплаты и возврата автозапчастей.')
 
 @section('content')
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

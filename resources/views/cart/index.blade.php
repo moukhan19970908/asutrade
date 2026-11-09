@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Корзина - ASU Trade')
+@section('title', 'Корзина — Asu Trade')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -36,7 +36,7 @@
                                 <div class="w-20 h-20 mr-4">
                                     @if($item->product->image)
                                         <img src="{{ asset('storage/' . $item->product->image) }}" 
-                                             class="w-full h-full object-cover rounded-lg" alt="{{ $item->product->name }}">
+                                             class="w-full h-full object-cover rounded-lg" alt="{{ $item->product->name }}" loading="lazy" decoding="async">
                                     @else
                                         <div class="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
                                             <i class="fas fa-image text-gray-400"></i>

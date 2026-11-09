@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ForceCanonicalHost;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Foundation\Application;
@@ -17,6 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Раньше первым: отсекает лишний хост до всей остальной работы.
+        $middleware->prepend(ForceCanonicalHost::class);
         $middleware->append(SetLocale::class);
         //$middleware->append('guest', RedirectIfAuthenticated::class);
     })

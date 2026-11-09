@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Мои заказы - ASU Trade')
+@section('title', 'Мои заказы — Asu Trade')
 
 @section('content')
 

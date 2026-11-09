@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Заказ #' . $order->order_number . ' - ASU Trade')
+@section('title', 'Заказ №' . $order->order_number . ' — Asu Trade')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">

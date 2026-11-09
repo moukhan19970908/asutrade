@@ -25,7 +25,7 @@
                    class="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-4 text-center">
                     @if($brand->logo)
                         <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}"
-                             class="w-14 h-14 mx-auto mb-3 object-contain">
+                             class="w-14 h-14 mx-auto mb-3 object-contain" loading="lazy" decoding="async">
                     @else
                         <div class="w-14 h-14 mx-auto mb-3 bg-gray-100 rounded-lg flex items-center justify-center">
                             <i class="fas fa-industry text-gray-400"></i>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Оформление заказа - ASU Trade')
+@section('title', 'Оформление заказа — Asu Trade')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">

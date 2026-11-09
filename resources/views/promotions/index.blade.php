@@ -41,7 +41,7 @@
                        class="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-4">
                         @if($product->image)
                             <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
-                                 class="w-full h-32 object-contain mb-3">
+                                 class="w-full h-32 object-contain mb-3" loading="lazy" decoding="async">
                         @else
                             <div class="w-full h-32 bg-gray-100 rounded flex items-center justify-center mb-3">
                                 <i class="fas fa-box text-gray-400 text-2xl"></i>

@@ -27,7 +27,10 @@ class Seo
             array_shift($segments);
         }
 
-        $url = rtrim(url('/'), '/');
+        // Берём хост из конфига, а не из запроса: иначе www.asu-trade.com
+        // проставлял бы canonical сам на себя, и Google видел бы два сайта
+        // с одинаковым содержимым вместо одного.
+        $url = rtrim((string) config('app.url'), '/');
 
         if ($segments !== []) {
             $url .= '/'.implode('/', $segments);

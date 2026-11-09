@@ -70,7 +70,7 @@
     <!-- Hero Section -->
     <section class="mb-8">
         <div class="rounded-lg overflow-hidden shadow-lg">
-            <img src="{{ asset('img/banner.webp') }}" alt="Автозапчасти Asu Trade" class="w-full h-auto max-h-96 object-cover">
+            <img src="{{ asset('img/banner.webp') }}" alt="Автозапчасти Asu Trade" class="w-full h-auto max-h-96 object-cover" fetchpriority="high">
         </div>
         <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mt-6">
             Автозапчасти, масла и фильтры в Актау, Жанаозене и Актобе
@@ -89,7 +89,7 @@
                 <a href="{{ route('catalog.category', $category) }}" class="block">
                     <div class="bg-gray-100 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-4 text-center">
                         @if($category->image)
-                            <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-24 h-24 mx-auto mb-2 object-contain">
+                            <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-24 h-24 mx-auto mb-2 object-contain" loading="lazy" decoding="async">
                         @else
                             <div class="w-12 h-12 mx-auto mb-2 bg-gray-200 rounded-lg flex items-center justify-center">
                                 <i class="fas fa-th-large text-gray-500"></i>
@@ -114,7 +114,7 @@
                         @if($product->image)
                             <img src="{{ asset('storage/' . $product->image) }}"
                                  alt="{{ $product->name }}"
-                                 class="w-full h-48 object-contain">
+                                 class="w-full h-48 object-contain" loading="lazy" decoding="async">
                         @else
                             <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
                                 <i class="fas fa-image text-gray-400 text-4xl"></i>
@@ -173,7 +173,7 @@
                         @if($product->image)
                             <img src="{{ asset('storage/' . $product->image) }}"
                                  alt="{{ $product->name }}"
-                                 class="w-full h-48 object-contain">
+                                 class="w-full h-48 object-contain" loading="lazy" decoding="async">
                         @else
                             <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
                                 <i class="fas fa-image text-gray-400 text-4xl"></i>
@@ -218,7 +218,7 @@
                 <a href="{{ route('brands.show', $brand) }}"
                    class="block bg-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-4 text-center">
                     @if($brand->logo)
-                        <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}" class="w-10 h-10 mx-auto mb-2 object-contain">
+                        <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}" class="w-10 h-10 mx-auto mb-2 object-contain" loading="lazy" decoding="async">
                     @else
                         <div class="w-10 h-10 mx-auto mb-2 bg-gray-200 rounded-lg flex items-center justify-center">
                             <i class="fas fa-industry text-gray-500"></i>

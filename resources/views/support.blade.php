@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Техническая поддержка — Asu Oil Trade')
+@section('title', 'Техническая поддержка — Asu Trade')
+@section('description', 'Связаться с Asu Trade: вопросы по заказу, наличию и доставке автозапчастей. Телефон и WhatsApp магазинов в Актау, Жанаозене и Актобе.')
 
 @section('content')
     <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

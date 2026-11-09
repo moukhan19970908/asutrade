@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Политика конфиденциальности — Asu Oil Trade')
+@section('title', 'Политика конфиденциальности — Asu Trade')
+@section('description', 'Как Asu Trade собирает, хранит и использует персональные данные клиентов сайта и приложения ASU Auto.')
 
 @section('content')
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

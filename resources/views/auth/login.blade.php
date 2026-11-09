@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Авторизация - Auto Parts')
+@section('title', 'Вход в личный кабинет — Asu Trade')
 
 @section('content')
 <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
         <div class="text-center">
-            <h2 class="text-3xl font-bold text-gray-900">Добро пожаловать</h2>
+            <h1 class="text-3xl font-bold text-gray-900">Вход в личный кабинет</h1>
         </div>
 
         <form class="mt-8 space-y-6" method="POST" action="{{ route('login') }}">
