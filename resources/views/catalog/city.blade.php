@@ -15,9 +15,36 @@
 @section('description', $heading.': '.$total.' позиций в наличии на складе. '.$pointsCount.
     ($pointsCount === 1 ? ' магазин' : ' магазина').' Asu Trade в городе, самовывоз и доставка.')
 
+@php
+    // Ответы собраны из остатков склада этого города и его адресов,
+    // поэтому на каждой городской странице они разные. Общий у всех
+    // только порог бесплатной доставки.
+    $addresses = collect($city['points'])->pluck('street')->implode('; ');
+    $freeFrom = number_format(config('stores.free_delivery_from'), 0, '.', ' ').' ₸';
+
+    $faq = [
+        [
+            'q' => $category->name.' — есть в наличии в '.$city['name_prepositional'].'?',
+            'a' => $total > 0
+                ? 'Да. На складе в '.$city['name_prepositional'].' сейчас '.\App\Support\Plural::with($total, 'позиция', 'позиции', 'позиций').' из раздела «'.$category->name.'». Наличие обновляется по данным склада, актуальный список — на этой странице.'
+                : 'Сейчас этих товаров нет на складе в '.$city['name_prepositional'].'. Напишите нам в WhatsApp по номеру '.config('stores.phone_display').' — привезём под заказ и сообщим срок.',
+        ],
+        [
+            'q' => 'Где забрать заказ в '.$city['name_prepositional'].'?',
+            'a' => (count($city['points']) === 1 ? 'Магазин Asu Trade в ' : 'Магазины Asu Trade в ')
+                .$city['name_prepositional'].': '.$addresses.'. Самовывоз бесплатный, телефон '.config('stores.phone_display').'.',
+        ],
+        [
+            'q' => 'Сколько стоит доставка?',
+            'a' => 'Доставка бесплатна при заказе от '.$freeFrom.'. При меньшей сумме стоимость считается индивидуально и зависит от адреса и веса. Самовывоз из магазина бесплатен всегда.',
+        ],
+    ];
+@endphp
+
 @push('schema')
     @include('partials.schema-breadcrumbs', ['trail' => $trail])
     @include('partials.schema-stores', ['onlyCity' => $citySlug])
+    @include('partials.schema-faq', ['faq' => $faq])
 @endpush
 
 @section('content')
@@ -32,9 +59,7 @@
         @if($total > 0)
             На складе в {{ $city['name_prepositional'] }} сейчас
             <strong>{{ $total }}</strong>
-            @if($total % 10 === 1 && $total % 100 !== 11) позиция
-            @elseif(in_array($total % 10, [2, 3, 4]) && ! in_array($total % 100, [12, 13, 14])) позиции
-            @else позиций @endif
+            {{ \App\Support\Plural::ru($total, 'позиция', 'позиции', 'позиций') }}
             из раздела «{{ $category->name }}».
         @else
             Сейчас в {{ $city['name_prepositional'] }} этих товаров нет в наличии.
@@ -115,6 +140,8 @@
 
         <div class="mt-8">{{ $products->links() }}</div>
     @endif
+
+    @include('partials.faq', ['faq' => $faq, 'faqTitle' => $category->name.' в '.$city['name_prepositional'].': частые вопросы'])
 
     {{-- Перелинковка: спица → другие спицы и обратно в хаб --}}
     @if($otherCities->isNotEmpty())

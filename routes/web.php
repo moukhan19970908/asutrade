@@ -5,6 +5,7 @@ use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CityCatalogController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegacyUrlController;
+use App\Http\Controllers\LlmsTxtController;
 use App\Http\Controllers\MobileAppController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StoreController;
@@ -24,6 +25,8 @@ Route::prefix('admin/import')->name('admin.products.')->group(function () {
 
 // Главная страница
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+// Краткая карта сайта для языковых моделей (llmstxt.org).
+Route::get('/llms.txt', [LlmsTxtController::class, 'index'])->name('llms');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/delivery', [HomeController::class, 'delivery'])->name('delivery');

@@ -151,13 +151,19 @@
                 @endif
 
                 @if(isset($category))
-                    @php($cityRows = collect(config('stores.cities'))
-                        ->map(fn ($data, $slug) => [
-                            'slug' => $slug,
-                            'prepositional' => $data['name_prepositional'],
-                            'count' => \App\Support\CityCatalog::count($category, $slug),
-                        ])
-                        ->filter(fn ($row) => $row['count'] > 0))
+                    @php
+                        // Только блочная форма: смешивать её с короткой
+                        // однострочной в одном файле нельзя — та открывает блок,
+                        // который закрывается лишь на следующем endphp,
+                        // и всё между ними попадает в PHP как текст.
+                        $cityRows = collect(config('stores.cities'))
+                            ->map(fn ($data, $slug) => [
+                                'slug' => $slug,
+                                'prepositional' => $data['name_prepositional'],
+                                'count' => \App\Support\CityCatalog::count($category, $slug),
+                            ])
+                            ->filter(fn ($row) => $row['count'] > 0);
+                    @endphp
 
                     @if($cityRows->isNotEmpty())
                         <div class="mb-4">

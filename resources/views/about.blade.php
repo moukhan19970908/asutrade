@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'ASU Trade - Главная')
+@section('title', 'О компании Asu Trade — автозапчасти и масла в Казахстане')
+@section('description', 'Asu Trade — поставщик автозапчастей, масел и фильтров в Казахстане. Магазины в Актау, Жанаозене и Актобе, работа с частными клиентами, автопарками и сервисными центрами.')
+
+@push('schema')
+    @include('partials.schema-breadcrumbs', ['trail' => [['name' => 'О компании']]])
+@endpush
 
 @section('content')
     <div class="flex justify-center items-center min-h-screen px-4">

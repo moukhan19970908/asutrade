@@ -7,19 +7,43 @@ use App\Support\CityCatalog;
 use Illuminate\Console\Command;
 
 /**
- * Сверка складов 1С с городами из config/stores.php.
+ * Сверка складов 1С с городами из config/stores.php и предпросмотр
+ * городских страниц каталога.
  *
- * Городские страницы каталога работают только если для города найден
- * склад — иначе страница была бы копией соседней. Команда показывает,
- * что реально лежит в базе и какие города остались без привязки.
+ * Городская страница работает только если для города найден склад —
+ * иначе она повторяла бы соседний город. Город может быть намеренно
+ * оставлен без склада (пустой список в конфиге): это не ошибка,
+ * а решение не плодить дубли.
  */
 class ShowWarehouses extends Command
 {
-    protected $signature = 'stores:warehouses';
+    protected $signature = 'stores:warehouses {--pages : Показать, какие городские страницы получатся}';
 
-    protected $description = 'Показать склады и их привязку к городам из config/stores.php';
+    protected $description = 'Склады, их привязка к городам и предпросмотр городских страниц';
 
     public function handle(): int
+    {
+        $this->showWarehouses();
+        $misconfigured = $this->showMapping();
+
+        if ($this->option('pages')) {
+            $this->showPages();
+        }
+
+        if ($misconfigured !== []) {
+            $this->newLine();
+            $this->error('Склад не найден: '.implode(', ', $misconfigured).'.');
+            $this->line('Городские страницы для них отдают 404 — это защита от дублей.');
+            $this->line('Впишите точное имя склада в config/stores.php → cities.<город>.warehouses');
+            $this->line('или оставьте пустой список, если городских страниц быть не должно.');
+
+            return self::FAILURE;
+        }
+
+        return self::SUCCESS;
+    }
+
+    protected function showWarehouses(): void
     {
         $warehouses = Warehouse::orderBy('id')->get();
 
@@ -27,44 +51,97 @@ class ShowWarehouses extends Command
 
         if ($warehouses->isEmpty()) {
             $this->warn('  складов нет');
-        } else {
-            foreach ($warehouses as $warehouse) {
-                $this->line(sprintf('  #%-3s %s', $warehouse->id, $warehouse->name));
-            }
+
+            return;
         }
 
+        foreach ($warehouses as $warehouse) {
+            $this->line(sprintf('  #%-3s %s', $warehouse->id, $warehouse->name));
+        }
+    }
+
+    /**
+     * @return array<string> города, где склад указан, но не найден
+     */
+    protected function showMapping(): array
+    {
         $this->newLine();
         $this->info('Привязка городов:');
 
         $rows = [];
+        $misconfigured = [];
 
         foreach (config('stores.cities') as $slug => $city) {
+            $expected = (array) ($city['warehouses'] ?? []);
             $ids = CityCatalog::warehouseIds($slug);
-            $expected = implode(', ', (array) ($city['warehouses'] ?? []));
+
+            $status = match (true) {
+                $ids !== [] => 'склады '.implode(', ', $ids),
+                $expected === [] => 'без каталога (намеренно)',
+                default => 'СКЛАД НЕ НАЙДЕН',
+            };
+
+            if ($ids === [] && $expected !== []) {
+                $misconfigured[] = $slug;
+            }
 
             $rows[] = [
                 $city['name'],
-                '/catalog/{категория}/'.$slug,
-                $expected !== '' ? $expected : '—',
-                $ids !== [] ? implode(', ', $ids) : 'НЕ НАЙДЕН',
+                $slug,
+                $expected !== [] ? implode(', ', $expected) : '—',
+                $status,
+                $ids !== [] ? 'да' : 'нет',
             ];
         }
 
-        $this->table(['Город', 'URL', 'Ожидается склад', 'id складов'], $rows);
+        $this->table(['Город', 'Слаг', 'Ожидается склад', 'Состояние', 'Страницы каталога'], $rows);
 
-        $missing = collect(config('stores.cities'))
-            ->keys()
-            ->reject(fn ($slug) => CityCatalog::configured($slug));
+        return $misconfigured;
+    }
 
-        if ($missing->isNotEmpty()) {
+    /**
+     * Предпросмотр: какие страницы получатся и какие уйдут под noindex.
+     */
+    protected function showPages(): void
+    {
+        $this->newLine();
+        $this->info('Городские страницы каталога (порог индексации — '.CityCatalog::MIN_PRODUCTS.' позиции):');
+
+        $indexable = 0;
+        $thin = 0;
+
+        foreach (config('stores.cities') as $slug => $city) {
+            if (! CityCatalog::configured($slug)) {
+                continue;
+            }
+
             $this->newLine();
-            $this->warn('Без склада: '.$missing->implode(', ').'.');
-            $this->warn('Городские страницы для них отдают 404 — это защита от дублей.');
-            $this->warn('Впишите точное имя склада в config/stores.php → cities.<город>.warehouses.');
+            $this->line('<comment>'.$city['name'].'</comment>');
 
-            return self::FAILURE;
+            $rows = CityCatalog::categoriesWithStock($slug);
+
+            if ($rows->isEmpty()) {
+                $this->line('  остатков нет ни в одной категории');
+
+                continue;
+            }
+
+            foreach ($rows as $row) {
+                $ok = $row['count'] >= CityCatalog::MIN_PRODUCTS;
+                $ok ? $indexable++ : $thin++;
+
+                $this->line(sprintf(
+                    '  %s /catalog/%s/%s — %d поз.%s',
+                    $ok ? '<info>✓</info>' : '<comment>·</comment>',
+                    $row['category']->slug,
+                    $slug,
+                    $row['count'],
+                    $ok ? '' : ' (noindex, не в карте сайта)',
+                ));
+            }
         }
 
-        return self::SUCCESS;
+        $this->newLine();
+        $this->line("Итого: <info>{$indexable}</info> страниц в индекс, {$thin} под noindex.");
     }
 }
